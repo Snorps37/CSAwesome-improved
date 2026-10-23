@@ -1,0 +1,38 @@
+{
+  "name": "csa-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"npm:server\" \"vite\"",
+    "server": "node server/index.mjs",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "electron:dev": "concurrently -k -n web,app -c magenta,cyan \"vite\" \"wait-on tcp:5173 && cross-env VITE_DEV=1 /usr/bin/electron . --class=csawesome\"",
+    "dev:system": "concurrently -k -n web,app -c magenta,cyan \"vite\" \"wait-on tcp:5173 && cross-env VITE_DEV=1 /usr/bin/electron . --class=csawesome\"",
+    "start:system": "vite build && /usr/bin/electron . --class=csawesome"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@monaco-editor/react": "^4.7.0",
+    "framer-motion": "^14.6.0",
+    "monaco-editor": "^0.57.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "cross-env": "^7.0.3",
+    "wait-on": "^8.0.0"
+  },
+  "main": "electron/main.cjs",
+  "description": "CSAwesome Improved - interactive AP CS A (Java) lessons"
+}

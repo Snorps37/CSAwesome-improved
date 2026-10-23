@@ -1,0 +1,59 @@
+const { app, BrowserWindow, shell } = require('electron');
+const path = require('path');
+const { pathToFileURL } = require('url');
+
+app.setName('csawesome');
+if (process.platform === 'linux' && typeof app.setDesktopName === 'function') app.setDesktopName('csawesome.desktop');
+app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
+
+const iconPath = path.join(__dirname, '..', 'assets', 'icon.png');
+const DEV = !!process.env.VITE_DEV;
+let win = null;
+let api = null;
+
+async function startApi() {
+  api = await import(pathToFileURL(path.join(__dirname, '..', 'server', 'index.mjs')).href);
+  // Fixed 3001 in dev (Vite proxies to it); in prod falls back to a free port if taken.
+  return api.start(3001);
+}
+
+function showWindow() {
+  if (!win) return;
+  if (win.isMinimized()) win.restore();
+  win.show();
+  win.focus();
+}
+
+async function createWindow() {
+  const port = await startApi();
+  win = new BrowserWindow({
+    width: 1280,
+    height: 820,
+    minWidth: 900,
+    minHeight: 600,
+    backgroundColor: '#000000',
+    autoHideMenuBar: true,
+    title: 'CSAwesome Improved',
+    show: false,
+    icon: iconPath,
+    webPreferences: { contextIsolation: true, nodeIntegration: false },
+  });
+  win.setMenuBarVisibility(false);
+  win.once('ready-to-show', () => win.show());
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (/^https?:\/\//i.test(url)) shell.openExternal(url);
+    return { action: 'deny' };
+  });
+  win.on('closed', () => (win = null));
+  win.loadURL(DEV ? 'http://localhost:5173' : `http://127.0.0.1:${port}/`);
+}
+
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.on('second-instance', showWindow);
+  app.whenReady().then(createWindow);
+}
+
+app.on('will-quit', () => { try { api && api.stop(); } catch {} });
+app.on('window-all-closed', () => app.quit());
