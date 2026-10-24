@@ -1,8 +1,8 @@
 // Tiny Java runner. POST /api/run {code} -> {stdout, stderr, compileError?}
 import http from 'node:http';
 import { spawn } from 'node:child_process';
-import { mkdtemp, writeFile, rm, readFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { mkdtemp, writeFile, rm, readFile, mkdir, rename } from 'node:fs/promises';
+import { tmpdir, homedir } from 'node:os';
 import path from 'node:path';
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -80,7 +80,30 @@ function serveStatic(req, res) {
   createReadStream(file).pipe(res);
 }
 
+// Progress lives in a file, not browser storage: the app's port (and so its origin) can change between launches.
+const DATA_DIR = path.join(process.env.XDG_DATA_HOME || path.join(homedir(), '.local', 'share'), 'csawesome');
+const PROGRESS_FILE = path.join(DATA_DIR, 'progress.json');
+
+function progressApi(req, res) {
+  if (req.method === 'GET') {
+    return readFile(PROGRESS_FILE, 'utf8').then((t) => send(res, 200, JSON.parse(t)), () => send(res, 200, {}));
+  }
+  let body = '', tooBig = false;
+  req.on('data', (d) => { body += d; if (body.length > 5 * 1024 * 1024) { tooBig = true; req.destroy(); } });
+  req.on('end', async () => {
+    if (tooBig) return;
+    try {
+      JSON.parse(body);
+      await mkdir(DATA_DIR, { recursive: true });
+      await writeFile(PROGRESS_FILE + '.tmp', body);
+      await rename(PROGRESS_FILE + '.tmp', PROGRESS_FILE);
+      send(res, 200, { ok: true });
+    } catch (e) { send(res, 400, { error: e.message }); }
+  });
+}
+
 const server = http.createServer((req, res) => {
+  if (req.url === '/api/progress' && (req.method === 'GET' || req.method === 'PUT')) return progressApi(req, res);
   if (req.method === 'GET' && req.url === '/api/health') return send(res, 200, { ok: true });
   if (req.method === 'GET' && !req.url.startsWith('/api/')) return serveStatic(req, res);
   if (req.method !== 'POST' || req.url !== '/api/run') return send(res, 404, { error: 'not found' });

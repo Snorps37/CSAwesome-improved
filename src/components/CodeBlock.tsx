@@ -48,7 +48,12 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
   runRef.current = run;
 
   const onMount: OnMount = (editor, monaco) => {
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runRef.current());
+    editor.onKeyDown((e) => {
+      if (e.keyCode === monaco.KeyCode.Enter && (e.ctrlKey || e.metaKey) && !e.altKey) {
+        e.preventDefault(); e.stopPropagation();
+        runRef.current();
+      }
+    });
     const K = monaco.KeyCode, C = monaco.KeyMod.CtrlCmd;
     for (const k of [K.Equal, K.NumpadAdd]) editor.addCommand(C | k, () => applyZoom(1));
     editor.addCommand(C | monaco.KeyMod.Shift | K.Equal, () => applyZoom(1));

@@ -10,6 +10,7 @@ export function Predict({ block, lessonId }: { block: PredictBlock; lessonId: st
   const solved = !!store.done[lessonId]?.[block.id];
   const [val, setVal] = useState('');
   const [tried, setTried] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const right = normAnswer(val) === normAnswer(block.answer);
 
   const submit = () => {
@@ -28,7 +29,20 @@ export function Predict({ block, lessonId }: { block: PredictBlock; lessonId: st
         onChange={(e) => setVal(e.target.value)}
         onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) submit(); }}
       />
-      {!solved && <button className="btn ghost" onClick={submit}>Check</button>}
+      {!solved && (
+        <div className="toolbar">
+          <button className="btn ghost" onClick={submit}>Check</button>
+          <button className="link" onClick={() => setRevealed((r) => !r)}>{revealed ? 'hide answer' : 'reveal answer'}</button>
+        </div>
+      )}
+      <AnimatePresence>
+        {revealed && !solved && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ overflow: 'hidden' }}>
+            <Markdown>{'§§§\n' + block.answer + '\n§§§'}</Markdown>
+            {block.explanation && <p className="explain">{block.explanation}</p>}
+          </motion.div>
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {(tried || solved) && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ overflow: 'hidden' }}>

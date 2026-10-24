@@ -1,6 +1,9 @@
 import type { Unit } from './types';
 import { unit1 } from './unit1';
 import { unit2 } from './unit2';
+import { unit3 } from './unit3';
+import { unit4 } from './unit4';
+import { unit5 } from './unit5';
 export { md } from './md';
 
 // Unit titles and topic counts follow the CSAwesome2 table of contents.
@@ -8,9 +11,9 @@ export { md } from './md';
 export const units: Unit[] = [
   unit1,
   unit2,
-  { id: 3, title: 'Class Creation', blurb: 'Writing your own classes, constructors, and methods.', lessons: [], plannedLessons: 9 },
-  { id: 4, title: 'Data Collections', blurb: 'Arrays, ArrayLists, 2D arrays, searching, sorting, recursion.', lessons: [], plannedLessons: 17 },
-  { id: 5, title: 'Inheritance', blurb: 'Subclasses, overriding, polymorphism (optional unit).', lessons: [], plannedLessons: 7 },
+  unit3,
+  unit4,
+  unit5,
 ];
 
 export const isBuilt = (u: Unit) => u.lessons.length > 0;

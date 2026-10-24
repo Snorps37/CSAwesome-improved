@@ -20,11 +20,32 @@ function load(): Store {
 
 let state: Store = load();
 const subs = new Set<() => void>();
+
+// Also mirrored to a file via the local server, since the app's origin (and its localStorage) can change between launches.
+let hydrated = false;
+let pushTimer: ReturnType<typeof setTimeout> | undefined;
+function persist() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* ignore */ }
+  if (!hydrated) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(() => {
+    fetch('/api/progress', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(state) }).catch(() => {});
+  }, 400);
+}
 function commit(next: Store) {
   state = next;
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* ignore */ }
+  persist();
   subs.forEach((f) => f());
 }
+
+fetch('/api/progress').then((r) => r.json()).then((srv: Partial<Store>) => {
+  const done = { ...(srv.done ?? {}) };
+  for (const [l, blocks] of Object.entries(state.done)) done[l] = { ...done[l], ...blocks };
+  state = { done, completed: { ...srv.completed, ...state.completed }, code: { ...srv.code, ...state.code } };
+  hydrated = true;
+  persist();
+  subs.forEach((f) => f());
+}).catch(() => { hydrated = true; });
 
 export const useStore = () =>
   useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, () => state);
@@ -58,7 +79,7 @@ export function setCompleted(lessonId: string, value: boolean) {
 export function saveCode(blockId: string, code: string) {
   // no re-render fanout needed for typing; write through directly
   state = { ...state, code: { ...state.code, [blockId]: code } };
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* ignore */ }
+  persist();
 }
 
 export const getCode = (blockId: string) => state.code[blockId];
