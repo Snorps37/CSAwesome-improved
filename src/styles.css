@@ -145,3 +145,8 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--accent); outlin
 .about h1 { font-size: 44px; letter-spacing: -0.03em; margin: 0 0 24px; }
 .footer { max-width: 980px; margin: 100px auto 0; padding-top: 24px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12.5px; line-height: 1.6; }
 .footer a { color: var(--dim); }
+
+/* predict */
+.predict-in { display: block; width: 100%; margin: 12px 0; padding: 10px 14px; background: #050505; border: 1px solid var(--line); border-radius: 10px; color: var(--fg); font-family: var(--mono); font-size: 14px; line-height: 1.5; resize: vertical; }
+.predict-in:focus { outline: none; border-color: #3a3a40; }
+.predict-in:disabled { color: var(--ok); }

@@ -21,3 +21,5 @@ export function checkRun(b: CodeBlock, r: ParsedRun): { ok: boolean; msg?: strin
 
 export const isRequired = (b: CodeBlock) =>
   b.expected !== undefined || !!b.mustContain || !!b.minDotMoves || !!b.completeOnRun;
+
+export const normAnswer = (s: string) => s.replace(/\s+/g, ' ').trim();

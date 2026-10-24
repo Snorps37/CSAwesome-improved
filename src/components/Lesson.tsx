@@ -3,6 +3,7 @@ import type { Lesson as LessonT, Unit } from '../content/types';
 import { Markdown } from './Markdown';
 import { CodeBlock } from './CodeBlock';
 import { Quiz } from './Quiz';
+import { Predict } from './Predict';
 import { requiredBlocks, setCompleted, useStore, resetLesson } from '../progress';
 import { go } from '../router';
 
@@ -43,6 +44,7 @@ export function LessonView({ unit, lesson }: { unit: Unit; lesson: LessonT }) {
           <motion.div key={lesson.id + i} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
             {b.type === 'text' ? <Markdown>{b.md}</Markdown>
               : b.type === 'code' ? <CodeBlock block={b} lessonId={lesson.id} />
+              : b.type === 'predict' ? <Predict block={b} lessonId={lesson.id} />
               : <Quiz block={b} lessonId={lesson.id} />}
           </motion.div>
         ))}

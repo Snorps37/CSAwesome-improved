@@ -27,7 +27,18 @@ export type QuizBlock = {
   explanation?: string;
 };
 
-export type Block = TextBlock | CodeBlock | QuizBlock;
+/** Predict-the-output: the learner types what the program prints. */
+export type PredictBlock = {
+  type: 'predict';
+  id: string;
+  question: string; // markdown prompt
+  /** Complete Java program shown to the learner. Its real output must equal `answer` (verified by the selftest). */
+  code: string;
+  answer: string; // compared with whitespace collapsed
+  explanation?: string;
+};
+
+export type Block = TextBlock | CodeBlock | QuizBlock | PredictBlock;
 
 export type Lesson = {
   id: string; // e.g. "1-2"

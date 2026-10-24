@@ -34,7 +34,7 @@ export const lessonKey = (unitId: number, lessonId: string) => `${unitId}:${less
 export function requiredBlocks(lessonId: string): string[] {
   for (const u of units) for (const l of u.lessons) if (l.id === lessonId) {
     return l.blocks.flatMap((b) =>
-      b.type === 'quiz' ? [b.id]
+      b.type === 'quiz' || b.type === 'predict' ? [b.id]
       : b.type === 'code' && (b.expected !== undefined || b.mustContain || b.minDotMoves || b.completeOnRun) ? [b.id]
       : []);
   }

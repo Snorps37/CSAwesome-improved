@@ -92,6 +92,104 @@ This app has a helper class called **Dot** that draws on a canvas, so you can se
     }
 }
 ` },
+        { type: 'text', md: md`
+### print vs println, and escape sequences
+
+§System.out.println§ prints and then moves to a new line. §System.out.print§ prints and stays on the same line, so the next output continues right after it.
+
+§§§java
+System.out.print("Hello, ");
+System.out.print("world");
+System.out.println("!");   // output: Hello, world!
+§§§
+
+Some characters cannot be typed directly inside a string, so Java uses **escape sequences** that start with a backslash:
+
+| Sequence | Meaning |
+|---|---|
+| §\n§ | new line |
+| §\"§ | a double quote character |
+| §\\§ | one backslash |
+| §\t§ | a tab |
+
+§System.out.println("a\nb");§ prints §a§ and §b§ on two lines.
+` },
+        { type: 'predict', id: 'p-print', question: 'What does this program print? Mind the difference between §print§ and §println§.',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        System.out.print("A");
+        System.out.println("B");
+        System.out.print("C\nD");
+        System.out.println("E");
+    }
+}
+`, answer: 'AB\nC\nDE', explanation: 'A and B share a line. C, a newline from the escape sequence, then D and E share the next line.' },
+        { type: 'code', id: 'escapes', prompt: 'Use escape sequences so the program prints exactly these two lines (including the quotes and backslashes):\n\n§"Hello," she said.§\n§Path: C:\\Users\\Ada§\n\nUse a single §println§ call with §\\n§ for the first part if you like.',
+          expected: '"Hello," she said.\nPath: C:\\Users\\Ada',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        // TODO: print the two lines using \" and \\ escapes
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        System.out.println("\"Hello,\" she said.");
+        System.out.println("Path: C:\\Users\\Ada");
+    }
+}
+`, hint: 'Inside a string, write \\" for a quote and \\\\ for a single backslash.' },
+        { type: 'text', md: md`
+### Three kinds of errors
+
+- **Syntax (compile-time) errors** break Java's grammar: a missing semicolon, an unclosed string, a misspelled keyword. The compiler stops and points at the line. The program never runs.
+- **Runtime errors (exceptions)** happen while the program runs, such as dividing an int by zero. The program starts, then crashes with a message like §ArithmeticException§.
+- **Logic errors** are the sneakiest. The program compiles and runs without complaint, but gives the wrong answer because the steps are wrong. Only testing and tracing will find them.
+` },
+        { type: 'quiz', id: 'q-err1', question: 'A program prints the **average** of 10 and 20 as 25 because it computes §10 + 20 / 2§. What kind of error is this?',
+          choices: ['Syntax error', 'Runtime error', 'Logic error', 'It is not an error'], answer: 2,
+          explanation: 'It compiles and runs, but the logic is wrong (it needs parentheses). That is a logic error. Nothing crashed, so it was not a runtime error.' },
+        { type: 'quiz', id: 'q-err2', question: 'Which statement causes a **runtime** error (it compiles fine, then crashes)?',
+          choices: ['§System.out.println("Hi")§ (no semicolon)', '§int x = 10 / 0;§', '§Sytem.out.println("Hi");§', '§System.out.println("Hi);§'], answer: 1,
+          explanation: 'Dividing an int by zero throws an ArithmeticException while running. The other three are compile-time errors: missing semicolon, a misspelled class name, and an unclosed string.' },
+        { type: 'code', id: 'fix-runtime', prompt: 'This program compiles but **crashes** when run. Fix it so it prints §Average: 5§. (Hint: count the items correctly.)',
+          expected: 'Average: 5',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int total = 10;
+        int count = 0;
+        System.out.println("Average: " + total / count);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int total = 10;
+        int count = 2;
+        System.out.println("Average: " + total / count);
+    }
+}
+`, hint: 'Dividing by zero is the crash. What should count be if the total is 10 and the average is 5?' },
+        { type: 'code', id: 'fix-logic', prompt: 'This program compiles and runs but has a **logic error**. A 6 by 4 rectangle should have an area of 24 and a perimeter of 20. Fix it so it prints §Area: 24§ then §Perimeter: 20§.',
+          expected: 'Area: 24\nPerimeter: 20',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int w = 6;
+        int h = 4;
+        System.out.println("Area: " + (w + h));
+        System.out.println("Perimeter: " + w + h * 2);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int w = 6;
+        int h = 4;
+        System.out.println("Area: " + (w * h));
+        System.out.println("Perimeter: " + (2 * (w + h)));
+    }
+}
+`, hint: 'Area is w times h. For the perimeter, add w and h first, then double it, and use parentheses so the text does not glue numbers together.' },
       ],
     },
     {
@@ -168,6 +266,76 @@ Names are case-sensitive and by convention start lowercase, with later words cap
         { type: 'quiz', id: 'q-final', question: 'What does §final§ do in §final int MAX = 10;§?',
           choices: ['Makes MAX the last variable declared', 'Prevents MAX from being changed after it is set', 'Makes MAX a decimal', 'Nothing, it is a comment'],
           answer: 1 },
+        { type: 'text', md: md`
+### Naming rules and declaring vs initializing
+
+Variable names (identifiers) may contain letters, digits, §_§ and §$§, **cannot start with a digit**, cannot contain spaces, and cannot be a Java keyword like §class§ or §int§. Names are case-sensitive: §score§ and §Score§ are different variables. Pick meaningful names (§numStudents§, not §n§).
+
+**Declaring** creates the variable: §int count;§. **Initializing** gives it its first value: §count = 0;§. You can do both at once. A local variable must be given a value before you read it, or the program will not compile.
+
+By convention, constants declared with §final§ are written in ALL_CAPS with underscores: §final int SECONDS_PER_MINUTE = 60;§. Trying to change one later is a compile-time error.
+` },
+        { type: 'quiz', id: 'q-name', question: 'Which of these is a **legal** Java variable name?',
+          choices: ['2ndPlace', 'my score', 'total_points', 'class'], answer: 2,
+          explanation: 'Names cannot start with a digit (2ndPlace), contain spaces (my score), or be a keyword (class). total_points is legal.' },
+        { type: 'quiz', id: 'q-decl', question: 'Which line of code **declares** a variable but does not initialize it?',
+          choices: ['int n = 5;', 'int n;', 'n = 5;', 'final int n = 5;'], answer: 1,
+          explanation: 'int n; creates n with no value yet. n = 5; only assigns to an existing variable.' },
+        { type: 'quiz', id: 'q-type', question: 'Which declaration will **not compile**?',
+          choices: ['double d = 5;', 'int i = 5.5;', 'String s = "5";', 'boolean b = false;'], answer: 1,
+          explanation: 'A decimal value cannot be stored in an int without a cast (you would lose information). An int can be stored in a double, so double d = 5; is fine and holds 5.0.' },
+        { type: 'predict', id: 'p-vars', question: 'What does this program print?',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        int apples = 3;
+        double price = 0.5;
+        String fruit = "apples";
+        boolean cheap = true;
+        System.out.println(apples + " " + fruit + " at " + price + " is cheap: " + cheap);
+    }
+}
+`, answer: '3 apples at 0.5 is cheap: true', explanation: 'Each variable is converted to text and joined with +.' },
+        { type: 'code', id: 'fix-types', prompt: 'Three of the declarations below have the wrong type for their value, so the program will not compile. Fix the **types** (do not change the values) so it prints §Zed 17 1.75 true§ on one line.',
+          expected: 'Zed 17 1.75 true',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int name = "Zed";
+        int height = 1.75;
+        boolean age = 17;
+        boolean ready = true;
+        System.out.println(name + " " + age + " " + height + " " + ready);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        String name = "Zed";
+        double height = 1.75;
+        int age = 17;
+        boolean ready = true;
+        System.out.println(name + " " + age + " " + height + " " + ready);
+    }
+}
+`, hint: 'name is text, height has a decimal point, and age is a whole number.' },
+        { type: 'code', id: 'constants', prompt: 'Use a **constant** to avoid magic numbers. Declare §final int SECONDS_PER_MINUTE = 60;§ and §final int MINUTES_PER_HOUR = 60;§, then print how many seconds are in 3 hours as §Seconds: 10800§.',
+          expected: 'Seconds: 10800',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int hours = 3;
+        // TODO: declare the two constants and compute the seconds
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int hours = 3;
+        final int SECONDS_PER_MINUTE = 60;
+        final int MINUTES_PER_HOUR = 60;
+        int seconds = hours * MINUTES_PER_HOUR * SECONDS_PER_MINUTE;
+        System.out.println("Seconds: " + seconds);
+    }
+}
+` },
       ],
     },
     {
@@ -238,6 +406,76 @@ Join text and values with §+§: §"Total: " + 5§ gives §"Total: 5"§. Escape 
             d.forward(80);
             d.turnRight(720 / n);
         }
+    }
+}
+` },
+        { type: 'text', md: md`
+### Pitfalls to watch for
+
+**Integer division happens before you convert.** In §double half = 1 / 2;§ the division is between two ints, so it yields §0§, which is then stored as §0.0§. Make one operand a double (§1 / 2.0§) to get §0.5§.
+
+**Remainder with negatives.** §%§ takes the sign of the left operand: §-7 % 3§ is §-1§. On the AP exam the left side is almost always non-negative. Useful patterns:
+
+- §n % 2 == 0§ means n is even; §n % 10§ is the last digit; §n / 10§ drops the last digit.
+- §x % 5§ is always between 0 and 4 (for non-negative x), handy for wrapping around.
+
+**Dividing by zero.** §5 / 0§ with ints crashes with an ArithmeticException. With doubles, §5.0 / 0§ gives §Infinity§ instead of crashing.
+
+**Strings and +.** Evaluation goes left to right. §1 + 2 + "x"§ is §"3x"§, but §"x" + 1 + 2§ is §"x12"§. Use parentheses to force the math first: §"x" + (1 + 2)§ is §"x3"§.
+` },
+        { type: 'predict', id: 'p-concat', question: 'What does this print? Remember that §+§ is evaluated left to right.',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        System.out.println(1 + 2 + "x" + 1 + 2);
+        System.out.println("y" + (1 + 2));
+    }
+}
+`, answer: '3x12\ny3', explanation: '1 + 2 is 3 (still numbers), then "3x", then 1 and 2 are glued on as text. The second line adds inside parentheses first.' },
+        { type: 'predict', id: 'p-mixed', question: 'What does this print?',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        System.out.println(7 / 2 + 7 % 2 + 7 / 2.0);
+    }
+}
+`, answer: '7.5', explanation: '7 / 2 is 3, 7 % 2 is 1, and 7 / 2.0 is 3.5, so 3 + 1 + 3.5 = 7.5.' },
+        { type: 'quiz', id: 'q-neg', question: 'What does §System.out.println(-7 % 3);§ print?',
+          choices: ['1', '-1', '2', '-2'], answer: 1, explanation: 'The result takes the sign of the left operand: -7 = -2 * 3 + (-1), so the remainder is -1.' },
+        { type: 'quiz', id: 'q-zero', question: 'What does §System.out.println(5.0 / 0);§ do?',
+          choices: ['Crashes with ArithmeticException', 'Prints 0.0', 'Prints Infinity', 'Does not compile'], answer: 2, explanation: 'Only integer division by zero throws. Floating point division by zero gives Infinity.' },
+        { type: 'code', id: 'fix-pct', prompt: '3 out of 4 questions were correct, so the program should print §Percent: 75§. It prints 0 instead because of integer division. Fix it **without** using doubles (reorder the arithmetic).',
+          expected: 'Percent: 75',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int correct = 3;
+        int total = 4;
+        int pct = correct / total * 100;
+        System.out.println("Percent: " + pct);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int correct = 3;
+        int total = 4;
+        int pct = correct * 100 / total;
+        System.out.println("Percent: " + pct);
+    }
+}
+`, hint: 'Multiply by 100 first, so the division no longer throws away everything.' },
+        { type: 'code', id: 'digits', prompt: 'Use §/§ and §%§ to split §n§ into its last digit and the rest. For §n = 4721§ print §Rest: 472§ then §Last digit: 1§.',
+          expected: 'Rest: 472\nLast digit: 1',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int n = 4721;
+        // TODO
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int n = 4721;
+        System.out.println("Rest: " + n / 10);
+        System.out.println("Last digit: " + n % 10);
     }
 }
 ` },
@@ -317,6 +555,51 @@ To swap two variables you need a temporary third one, otherwise the first assign
     }
 }
 ` },
+        { type: 'text', md: md`
+### Declaring vs assigning, and common slips
+
+- The **left side** of §=§ must be a variable: §score = 5;§ works but §5 = score;§ does not compile.
+- You can declare a variable only once in a scope. Later changes are plain assignments (no type): §int x = 1; x = 2;§
+- A local variable that was never given a value cannot be read. §int total; System.out.println(total);§ is a compile error.
+- The type of the value must fit the variable: §int n = 2.5;§ is a compile error ("lossy conversion"), but §double d = 2;§ is fine.
+
+When tracing code, keep a small table of every variable and update it after each line. That is exactly what the computer does.
+` },
+        { type: 'predict', id: 'p-trace4', question: 'Trace the variables. What does this program print?',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        int a = 4;
+        int b = a * 2;
+        a = b - a;
+        b = a + b;
+        a = a * b;
+        System.out.println(a + " " + b);
+    }
+}
+`, answer: '48 12', explanation: 'a=4,b=8 -> a=8-4=4 -> b=4+8=12 -> a=4*12=48.' },
+        { type: 'quiz', id: 'q-legal', question: 'Which assignment is **not** legal Java (assuming §int x§ and §double y§ are already declared and initialized)?',
+          choices: ['y = x;', 'x = y;', 'x = x + 1;', 'y = y * 2;'], answer: 1,
+          explanation: 'Storing a double into an int would lose the fractional part, so the compiler rejects x = y; without a cast. y = x; widens safely.' },
+        { type: 'code', id: 'fix-assign', prompt: 'This program has two assignment mistakes. Fix them so it prints §Score: 15§.',
+          expected: 'Score: 15',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int score;
+        10 = score;
+        score = score + 5;
+        System.out.println("Score: " + score);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int score;
+        score = 10;
+        score = score + 5;
+        System.out.println("Score: " + score);
+    }
+}
+`, hint: 'The variable goes on the left of the = sign.' },
       ],
     },
     {
@@ -390,6 +673,83 @@ To round a positive double to the nearest int: §(int) (x + 0.5)§. For negative
     }
 }
 ` },
+        { type: 'text', md: md`
+### More casting rules
+
+- **Widening** (int to double) happens automatically: §double d = 5;§ stores §5.0§.
+- **Narrowing** (double to int) needs an explicit cast, and it **truncates toward zero**: §(int) 3.99§ is §3§ and §(int) -3.99§ is §-3§.
+- In a mixed expression, the int is promoted to double before the operator runs: §1 + 2.5§ is §3.5§.
+- A cast applies only to the value right after it. §(double) 1 / 2§ is §0.5§ but §(double) (1 / 2)§ is §0.0§.
+
+### Limits of int and double
+
+- §int§ overflow wraps around silently. §Integer.MAX_VALUE + 1§ equals §Integer.MIN_VALUE§. Multiplication can overflow too: §100000 * 100000§ does not give 10 billion.
+- §double§ stores about 15 to 16 significant digits, and many decimals (like 0.1) cannot be stored exactly in binary. So §0.1 + 0.2§ prints §0.30000000000000004§. For this reason, you should never test doubles for exact equality; compare whether they are very close instead.
+` },
+        { type: 'predict', id: 'p-cast5', question: 'What does this program print?',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        System.out.println((int) -3.7);
+        System.out.println((int) (3.7 + 0.5));
+        System.out.println((double) 1 / 2);
+        System.out.println((double) (1 / 2));
+        System.out.println(1 + 2.5);
+    }
+}
+`, answer: '-3\n4\n0.5\n0.0\n3.5', explanation: 'Casting to int truncates toward zero. The cast binds tighter than /, so (double) 1 / 2 is 1.0 / 2. With the parentheses, 1 / 2 is integer division first.' },
+        { type: 'predict', id: 'p-prec5', question: 'What does this program print? (Think about the limits of the types.)',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        System.out.println(0.1 + 0.2);
+        System.out.println(Integer.MAX_VALUE + 1 == Integer.MIN_VALUE);
+        System.out.println(100000 * 100000);
+    }
+}
+`, answer: '0.30000000000000004\ntrue\n1410065408', explanation: 'Doubles cannot store 0.1 exactly. The int overflow wraps around. 10 billion does not fit in 32 bits; the low 32 bits are 1410065408.' },
+        { type: 'quiz', id: 'q-cast3', question: 'What is printed by §int x = (int) 7.9 + (int) 2.9; System.out.println(x);§?',
+          choices: ['10', '9', '11', '10.8'], answer: 1, explanation: 'Each cast truncates first: 7 + 2 = 9.' },
+        { type: 'quiz', id: 'q-over', question: 'What does §System.out.println(Integer.MAX_VALUE + 1);§ print?',
+          choices: ['2147483648', 'A compile error', 'A very large positive number', '-2147483648'], answer: 3, explanation: 'The int overflows and wraps around to Integer.MIN_VALUE, which is -2147483648.' },
+        { type: 'code', id: 'fix-pct5', prompt: 'A student got 4 out of 5 correct. This should print §Percent: 80.0§ but prints §Percent: 0.0§. Fix it using a **cast** in the right place.',
+          expected: 'Percent: 80.0',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int correct = 4;
+        int total = 5;
+        double pct = (double) (correct / total) * 100;
+        System.out.println("Percent: " + pct);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int correct = 4;
+        int total = 5;
+        double pct = (double) correct / total * 100;
+        System.out.println("Percent: " + pct);
+    }
+}
+`, hint: 'The cast must apply to correct (or total), not to the already-divided result.' },
+        { type: 'code', id: 'round-neg', prompt: 'Round both numbers to the nearest int with casts (positive: add 0.5, negative: subtract 0.5). Print §3 -3§ on one line.',
+          expected: '3 -3',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        double a = 2.6;
+        double b = -2.6;
+        // TODO
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        double a = 2.6;
+        double b = -2.6;
+        int ra = (int) (a + 0.5);
+        int rb = (int) (b - 0.5);
+        System.out.println(ra + " " + rb);
+    }
+}
+` },
       ],
     },
     {
@@ -451,6 +811,76 @@ On the AP exam §++§ and §--§ are used as standalone statements, never inside
     }
 }
 ` },
+        { type: 'text', md: md`
+### ++ and -- in detail
+
+§x++§ and §x--§ add or subtract exactly one. Written as their own statement they mean the same as §x += 1§ and §x -= 1§. Loops use them constantly.
+
+Two surprises:
+
+- **Compound operators include an implicit cast.** §int x = 10; x *= 1.5;§ works and leaves §x§ equal to §15§. And §x += 0.9;§ on §int x = 10§ stays §10§, because 10.9 is truncated back to an int. Plain §x = x + 0.9;§ would not even compile.
+- **Typos can compile.** §x =+ 1;§ is valid Java meaning "assign positive 1", not "add one". Write §+=§, with the operator first.
+` },
+        { type: 'predict', id: 'p-comp6', question: 'Trace the variable. What does this program print?',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        int x = 10;
+        x *= 1.5;
+        x += 0.9;
+        x /= 4;
+        x++;
+        x %= 3;
+        System.out.println(x);
+    }
+}
+`, answer: '1', explanation: '10 -> 15 -> 15 (15.9 truncated) -> 3 (15 / 4) -> 4 -> 4 % 3 = 1.' },
+        { type: 'quiz', id: 'q-comp3', question: 'After §double d = 10; d /= 4;§ what is d?',
+          choices: ['2', '2.0', '2.5', '3.0'], answer: 2, explanation: 'd is a double, so the division is floating point: 10.0 / 4 = 2.5.' },
+        { type: 'quiz', id: 'q-comp4', question: 'Which statement is **equivalent** to §count = count - 1;§?',
+          choices: ['count =- 1;', 'count--;', 'count -= -1;', '--count--;'], answer: 1, explanation: 'count-- subtracts one. count =- 1 assigns negative one, and count -= -1 would add one.' },
+        { type: 'code', id: 'fix-comp', prompt: 'A video game player starts with 3 lives. They gain 2, then lose 1, then the bonus doubles their lives. This should print §Lives: 8§ but there are two operator mistakes. Fix them.',
+          expected: 'Lives: 8',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int lives = 3;
+        lives =+ 2;
+        lives--;
+        lives =* 2;
+        System.out.println("Lives: " + lives);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int lives = 3;
+        lives += 2;
+        lives--;
+        lives *= 2;
+        System.out.println("Lives: " + lives);
+    }
+}
+`, hint: 'The operator comes before the equals sign: += and *=.' },
+        { type: 'code', id: 'steps', prompt: 'Start with §n = 100§. Use **only** compound operators and §++§ / §--§ (no plain §n = n ...§) to apply: divide by 7, add 10, then increment, then take the remainder when divided by 10. Print §n§ (it should be 5).',
+          expected: '5',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int n = 100;
+        // TODO
+        System.out.println(n);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int n = 100;
+        n /= 7;
+        n += 10;
+        n++;
+        n %= 10;
+        System.out.println(n);
+    }
+}
+`, hint: '100 / 7 is 14, then 24, then 25, then 25 % 10 is 5.' },
       ],
     },
     {
@@ -509,6 +939,113 @@ The general form is §(int) (Math.random() * range) + min§ where range is how m
             d.turnRight(turn);
             d.forward(12);
         }
+    }
+}
+` },
+        { type: 'text', md: md`
+### APIs, libraries and the documentation
+
+An **API** (application programming interface) describes what a class or library lets you do: the names, parameters and return values of its methods. A **library** is a collection of such classes. You do not need to know *how* §Math.sqrt§ works inside, only what it takes and returns. The documentation (the **Javadoc**) lists every method.
+
+Classes in §java.lang§ (like §Math§, §String§ and §System§) are available automatically. Classes in other packages need an §import§ line at the top of the file, for example §import java.util.ArrayList;§.
+
+### More Math patterns
+
+- §Math.abs(-5)§ is §5§ (an int stays an int; a double stays a double).
+- §Math.pow§ and §Math.sqrt§ always return **doubles**. Cast with §(int)§ if you need a whole number: §(int) Math.pow(2, 10)§ is §1024§.
+- §Math.random()§ returns a double with §0.0 <= x < 1.0§. It can be 0.0 but never exactly 1.0.
+
+To pick a random integer from §min§ to §max§ **inclusive**: §(int) (Math.random() * (max - min + 1)) + min§. Watch the parentheses: the cast must apply to the whole product, otherwise §(int) Math.random()§ is always §0§.
+` },
+        { type: 'predict', id: 'p-math7', question: 'What does this program print?',
+          code: j`public class Main {
+    public static void main(String[] args) {
+        System.out.println(Math.abs(-4) + " " + Math.pow(2, 3) + " " + Math.sqrt(9));
+        System.out.println((int) Math.pow(2, 10));
+        System.out.println(Math.abs(-2.5));
+    }
+}
+`, answer: '4 8.0 3.0\n1024\n2.5', explanation: 'abs of an int is an int (4). pow and sqrt give doubles (8.0 and 3.0). The cast turns 1024.0 into 1024.' },
+        { type: 'quiz', id: 'q-static', question: 'Why can you write §Math.sqrt(25)§ without first writing §new Math()§?',
+          choices: ['Math is a keyword', 'sqrt is a static method, so it belongs to the class itself', 'Math objects are created automatically', 'sqrt is a constructor'], answer: 1,
+          explanation: 'Static methods are called on the class name. No object is needed.' },
+        { type: 'quiz', id: 'q-rand', question: 'What are the possible values of §(int) (Math.random() * 10)§?',
+          choices: ['1 to 10', '0 to 10', '0 to 9', '0.0 to 9.9'], answer: 2, explanation: 'Math.random() is in [0, 1), so times 10 is in [0, 10), and truncating gives 0 through 9.' },
+        { type: 'quiz', id: 'q-rand2', question: 'Which expression gives a random integer from **10 to 20 inclusive**?',
+          choices: ['(int) (Math.random() * 20) + 10', '(int) (Math.random() * 10) + 11', '(int) (Math.random() * 11) + 10', '(int) (Math.random() * 21) + 10'], answer: 2,
+          explanation: 'There are 20 - 10 + 1 = 11 values, so range 11 and minimum 10.' },
+        { type: 'code', id: 'rand-range', prompt: 'Random numbers cannot be compared to exact output, so this program rolls many times and reports the smallest and largest values seen. Replace the TODO with an expression that gives a random int from **10 to 20 inclusive**. When correct it prints §min=10 max=20§. (The loop just repeats the roll 5000 times; you will learn it in Unit 2.)',
+          expected: 'min=10 max=20',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int min = 100;
+        int max = 0;
+        for (int i = 0; i < 5000; i++) {
+            int r = 0; // TODO: random int from 10 to 20 inclusive
+            if (r < min) min = r;
+            if (r > max) max = r;
+        }
+        System.out.println("min=" + min + " max=" + max);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int min = 100;
+        int max = 0;
+        for (int i = 0; i < 5000; i++) {
+            int r = (int) (Math.random() * 11) + 10;
+            if (r < min) min = r;
+            if (r > max) max = r;
+        }
+        System.out.println("min=" + min + " max=" + max);
+    }
+}
+`, hint: 'range = 20 - 10 + 1 = 11, minimum = 10.' },
+        { type: 'code', id: 'fix-dice', prompt: 'This dice roller should produce 1 to 6, but it has a logic bug (it always rolls the same number). Fix it so the program prints §min=1 max=6§.',
+          expected: 'min=1 max=6',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int min = 100;
+        int max = 0;
+        for (int i = 0; i < 2000; i++) {
+            int roll = (int) Math.random() * 6 + 1;
+            if (roll < min) min = roll;
+            if (roll > max) max = roll;
+        }
+        System.out.println("min=" + min + " max=" + max);
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int min = 100;
+        int max = 0;
+        for (int i = 0; i < 2000; i++) {
+            int roll = (int) (Math.random() * 6) + 1;
+            if (roll < min) min = roll;
+            if (roll > max) max = roll;
+        }
+        System.out.println("min=" + min + " max=" + max);
+    }
+}
+`, hint: 'The cast (int) only applies to Math.random() as written. Wrap the whole product in parentheses.' },
+        { type: 'code', id: 'dist', prompt: 'Use §Math.sqrt§, §Math.pow§ and §Math.abs§: find the distance between the points (1, 2) and (4, -2) and print §Distance: 5.0§.',
+          expected: 'Distance: 5.0',
+          starter: j`public class Main {
+    public static void main(String[] args) {
+        int x1 = 1, y1 = 2;
+        int x2 = 4, y2 = -2;
+        // TODO: sqrt((x2-x1)^2 + (y2-y1)^2)
+    }
+}
+`,
+          solution: j`public class Main {
+    public static void main(String[] args) {
+        int x1 = 1, y1 = 2;
+        int x2 = 4, y2 = -2;
+        double d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        System.out.println("Distance: " + d);
     }
 }
 ` },
