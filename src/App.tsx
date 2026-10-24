@@ -2,11 +2,26 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { units, isBuilt } from './content';
 import { globalStats, unitStats, useStore } from './progress';
+import { applyZoom, zoomDelta } from './settings';
 import { useRoute, go } from './router';
+import { Settings } from './components/Settings';
 import { Ring } from './components/Ring';
 import { LessonStatusDot, LessonView } from './components/Lesson';
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+function useGlobalZoom() {
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      const d = zoomDelta(e);
+      if (d === null) return;
+      e.preventDefault();
+      if (!(e.target as HTMLElement | null)?.closest?.('.monaco-editor')) applyZoom(d);
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
+}
 
 function TopBar() {
   const s = useStore();
@@ -26,6 +41,7 @@ function Header() {
       <a className="brand" href="#/"><i />csa/java</a>
       <div className="nav">
         <a href="#/about">about</a>
+        <Settings />
         <span className="pct">{Math.round(g.pct * 100)}%</span>
       </div>
     </header>
@@ -162,6 +178,7 @@ function Routes() {
 }
 
 export default function App() {
+  useGlobalZoom();
   const route = useRoute();
   // lessons transition per lesson; other pages per route
   const key = route;

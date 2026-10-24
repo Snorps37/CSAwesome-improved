@@ -6,6 +6,7 @@ import type { CodeBlock as CodeBlockT } from '../content/types';
 import { parseRun, runJava, type ParsedRun } from '../runner';
 import { checkRun, isRequired } from '../check';
 import { getCode, markBlockDone, saveCode, useStore } from '../progress';
+import { applyZoom, lineHeightFor, useSettings, zoomDelta } from '../settings';
 import { Markdown } from './Markdown';
 import { DotStage } from './DotStage';
 
@@ -22,6 +23,7 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
   const [runKey, setRunKey] = useState(0);
   const [showSol, setShowSol] = useState(false);
   const [height, setHeight] = useState(() => Math.min(460, Math.max(140, block.starter.split('\n').length * 21 + 12)));
+  const { fontSize } = useSettings();
   const codeRef = useRef(code);
   codeRef.current = code;
   const runningRef = useRef(false);
@@ -47,12 +49,31 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
 
   const onMount: OnMount = (editor, monaco) => {
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runRef.current());
+    const K = monaco.KeyCode, C = monaco.KeyMod.CtrlCmd;
+    for (const k of [K.Equal, K.NumpadAdd]) editor.addCommand(C | k, () => applyZoom(1));
+    editor.addCommand(C | monaco.KeyMod.Shift | K.Equal, () => applyZoom(1));
+    for (const k of [K.Minus, K.NumpadSubtract]) editor.addCommand(C | k, () => applyZoom(-1));
+    for (const k of [K.Digit0, K.Numpad0]) editor.addCommand(C | k, () => applyZoom(0));
+    editor.getDomNode()?.addEventListener('wheel', (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault(); e.stopPropagation();
+      applyZoom(e.deltaY < 0 ? 1 : -1);
+    }, { passive: false, capture: true });
   };
 
   useEffect(() => {
     const t = setTimeout(() => saveCode(block.id, code), 300);
     return () => clearTimeout(t);
   }, [code, block.id]);
+
+  const autoHeight = () => Math.min(460, Math.max(140, block.starter.split('\n').length * 21 + 12));
+  const startDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = e.currentTarget, y0 = e.clientY, h0 = height;
+    el.setPointerCapture(e.pointerId);
+    const move = (ev: PointerEvent) => setHeight(Math.min(900, Math.max(100, h0 + ev.clientY - y0)));
+    const up = () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); };
+    el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  };
 
   const reset = () => { setCode(block.starter); setResult(null); setVerdict(null); };
   const hasDots = !!result && result.dots.length > 0;
@@ -66,7 +87,7 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
           height={height} language="java" theme="void" value={code}
           onChange={(v) => setCode(v ?? '')} onMount={onMount}
           options={{
-            fontFamily: "'JetBrains Mono Variable', monospace", fontSize: 14, lineHeight: 22,
+            fontFamily: "'JetBrains Mono Variable', monospace", fontSize, lineHeight: lineHeightFor(fontSize),
             minimap: { enabled: false }, scrollBeyondLastLine: false, automaticLayout: true,
             padding: { top: 6, bottom: 6 }, renderLineHighlight: 'none', overviewRulerLanes: 0,
             hideCursorInOverviewRuler: true, scrollbar: { vertical: 'auto', horizontal: 'auto', useShadows: false },
@@ -76,6 +97,7 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
           onValidate={() => undefined}
           loading={<div style={{ height, color: 'var(--faint)', fontFamily: 'var(--mono)', fontSize: 13, padding: 16 }}>loading editor</div>}
         />
+        <div className="resize-handle" title="drag to resize, double-click to reset" onPointerDown={startDrag} onDoubleClick={() => setHeight(autoHeight())} />
       </div>
       <div className="toolbar">
         <motion.button className="btn primary" disabled={running} onClick={run} whileHover={{ y: -1 }} whileTap={{ scale: 0.97 }}>
