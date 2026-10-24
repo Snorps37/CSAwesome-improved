@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import { MAX_FONT, MIN_FONT, bumpFontSize, resetSettings, setColor, useSettings, type Colors } from '../settings';
+import { HexColorPicker } from 'react-colorful';
+import { MAX_FONT, MAX_UI_ZOOM, MIN_FONT, MIN_UI_ZOOM, bumpFontSize, bumpUiZoom, resetSettings, resetUiZoom, setAccent, setColor, useSettings, type Colors } from '../settings';
 
-const labels: [keyof Colors, string][] = [
-  ['keyword', 'keyword'], ['type', 'type'], ['string', 'string'], ['number', 'number'],
+type Key = keyof Colors | 'accent';
+const labels: [Key, string][] = [
+  ['accent', 'accent'],   ['keyword', 'keyword'], ['type', 'type'], ['string', 'string'], ['number', 'number'],
   ['comment', 'comment'], ['delimiter', 'dots & semicolons'], ['text', 'text'],
 ];
 
 export function Settings() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { fontSize, colors: c } = useSettings();
+  const { fontSize, colors: c, accent, uiZoom } = useSettings();
+  const [picking, setPicking] = useState<Key | null>(null);
+  const val = (k: Key) => (k === 'accent' ? accent : c[k]);
+  const put = (k: Key, v: string) => (k === 'accent' ? setAccent(v) : setColor(k, v));
 
   useEffect(() => {
     if (!open) return;
@@ -34,11 +39,28 @@ export function Settings() {
               <button onClick={() => bumpFontSize(1)} disabled={fontSize >= MAX_FONT}>+</button>
             </span>
           </div>
+          <div className="row">
+            <span>ui zoom</span>
+            <span className="size">
+              <button onClick={() => bumpUiZoom(-1)} disabled={uiZoom <= MIN_UI_ZOOM}>-</button>
+              {uiZoom}%
+              <button onClick={() => bumpUiZoom(1)} disabled={uiZoom >= MAX_UI_ZOOM}>+</button>
+              <button className="link" onClick={resetUiZoom} style={{ width: 'auto', border: 0 }}>reset</button>
+            </span>
+          </div>
           {labels.map(([k, l]) => (
-            <label className="row" key={k}>
-              <span>{l}</span>
-              <input type="color" value={'#' + c[k]} onChange={(e) => setColor(k, e.target.value)} />
-            </label>
+            <div key={k}>
+              <div className="row">
+                <span>{l}</span>
+                <button className="swatch" aria-label={`pick ${l} color`} aria-expanded={picking === k} style={{ background: '#' + val(k) }} onClick={() => setPicking(picking === k ? null : k)} />
+              </div>
+              {picking === k && (
+                <div className="picker">
+                  <HexColorPicker color={'#' + val(k)} onChange={(v) => put(k, v)} />
+                  <input className="hex" spellCheck={false} maxLength={7} defaultValue={'#' + val(k)} key={val(k)} onChange={(e) => { const v = e.target.value.replace('#', ''); if (/^[0-9a-f]{6}$/i.test(v)) put(k, v); }} />
+                </div>
+              )}
+            </div>
           ))}
           <pre style={{ fontSize, color: '#' + c.text }}>
             <span style={s('comment')}>// preview</span>{'\n'}

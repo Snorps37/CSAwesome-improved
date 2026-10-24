@@ -39,14 +39,14 @@ export function Predict({ block, lessonId }: { block: PredictBlock; lessonId: st
         {revealed && !solved && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ overflow: 'hidden' }}>
             <Markdown>{'§§§\n' + block.answer + '\n§§§'}</Markdown>
-            {block.explanation && <p className="explain">{block.explanation}</p>}
+            {block.explanation && <div className="explain"><Markdown>{block.explanation}</Markdown></div>}
           </motion.div>
         )}
       </AnimatePresence>
       <AnimatePresence>
         {(tried || solved) && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ overflow: 'hidden' }}>
-            <p className="explain">{solved || right ? 'Correct. ' + (block.explanation ?? '') : 'Not quite. Trace the code again, line by line.'}</p>
+            <div className="explain"><Markdown>{solved || right ? 'Correct. ' + (block.explanation ?? '') : 'Not quite. Trace the code again, line by line.'}</Markdown></div>
           </motion.div>
         )}
       </AnimatePresence>

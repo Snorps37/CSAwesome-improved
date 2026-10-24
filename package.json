@@ -19,8 +19,10 @@
     "framer-motion": "^14.6.0",
     "monaco-editor": "^0.57.0",
     "react": "^19.3.1",
+    "react-colorful": "^5.8.1",
     "react-dom": "^19.3.1",
     "react-markdown": "^10.1.0",
+    "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {

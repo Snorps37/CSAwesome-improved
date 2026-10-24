@@ -27,7 +27,7 @@ export function Quiz({ block, lessonId }: { block: QuizBlock; lessonId: string }
             className={'choice' + (isRight ? ' right' : '') + (isWrong ? ' wrong' : '')}
             onClick={() => pick(i)}
           >
-            <span className="k">{String.fromCharCode(65 + i)}</span><span>{c}</span>
+            <span className="k">{String.fromCharCode(65 + i)}</span><span><Markdown>{c}</Markdown></span>
           </motion.button>
         );
       })}
@@ -37,9 +37,9 @@ export function Quiz({ block, lessonId }: { block: QuizBlock; lessonId: string }
             initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
             style={{ overflow: 'hidden' }}
           >
-            <p className="explain">
-              {correct ? 'Correct. ' + (block.explanation ?? '') : 'Not quite, try another.'}
-            </p>
+            <div className="explain">
+              <Markdown>{correct ? 'Correct. ' + (block.explanation ?? '') : 'Not quite, try another.'}</Markdown>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

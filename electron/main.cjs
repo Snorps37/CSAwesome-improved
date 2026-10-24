@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell } = require('electron');
+const { app, BrowserWindow, Menu, shell } = require('electron');
 const path = require('path');
 const { pathToFileURL } = require('url');
 
@@ -36,9 +36,12 @@ async function createWindow() {
     title: 'CSAwesome Improved',
     show: false,
     icon: iconPath,
-    webPreferences: { contextIsolation: true, nodeIntegration: false },
+    webPreferences: { contextIsolation: true, nodeIntegration: false, preload: path.join(__dirname, 'preload.cjs') },
   });
+  // no default menu: its zoom accelerators would fight the app's own ctrl +/-/0 handling
+  Menu.setApplicationMenu(null);
   win.setMenuBarVisibility(false);
+  win.webContents.setVisualZoomLevelLimits(1, 1).catch(() => {});
   win.once('ready-to-show', () => win.show());
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:\/\//i.test(url)) shell.openExternal(url);

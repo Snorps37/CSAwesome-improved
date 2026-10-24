@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Lesson as LessonT, Unit } from '../content/types';
 import { Markdown } from './Markdown';
@@ -14,6 +15,31 @@ export function LessonStatusDot({ unit, lesson, current }: { unit: Unit; lesson:
   const on = !!s.completed[lesson.id];
   void unit;
   return <span className={'dot' + (on ? ' on' : n > 0 ? ' partial' : '') + (current ? ' current' : '')} />;
+}
+
+function Toc({ lesson }: { lesson: LessonT }) {
+  const s = useStore();
+  const [heads, setHeads] = useState<{ id: string; text: string }[]>([]);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const hs = Array.from(document.querySelectorAll<HTMLElement>('.lesson .md h3'));
+      setHeads(hs.map((h, i) => { h.id ||= `sec-${i}`; h.style.scrollMarginTop = '24px'; return { id: h.id, text: h.textContent || '' }; }));
+    }, 150);
+    return () => clearTimeout(t);
+  }, [lesson.id]);
+  const exercises = lesson.blocks.map((b, i) => ({ b, i })).filter(({ b }) => b.type !== 'text');
+  const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  return (
+    <aside className="toc" aria-label="on this page">
+      <div className="unit-title">On this page</div>
+      {heads.map((h) => <a key={h.id} href={`#${h.id}`} onClick={go(h.id)}>{h.text}</a>)}
+      {exercises.length > 0 && <div className="unit-title" style={{ marginTop: 18 }}>Exercises</div>}
+      {exercises.map(({ b, i }, n) => {
+        const d = !!s.done[lesson.id]?.[(b as { id: string }).id];
+        return <a key={i} className={'ex' + (d ? ' done' : '')} href={`#blk-${i}`} onClick={go(`blk-${i}`)}><span className="tick">{d ? '✓' : ''}</span>{b.type} {n + 1}</a>;
+      })}
+    </aside>
+  );
 }
 
 export function LessonView({ unit, lesson }: { unit: Unit; lesson: LessonT }) {
@@ -41,7 +67,7 @@ export function LessonView({ unit, lesson }: { unit: Unit; lesson: LessonT }) {
         <div className="progress-note">{n} / {req.length} exercises done</div>
         <div style={{ height: 36 }} />
         {lesson.blocks.map((b, i) => (
-          <motion.div key={lesson.id + i} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+          <motion.div id={`blk-${i}`} key={lesson.id + i} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
             {b.type === 'text' ? <Markdown>{b.md}</Markdown>
               : b.type === 'code' ? <CodeBlock block={b} lessonId={lesson.id} />
               : b.type === 'predict' ? <Predict block={b} lessonId={lesson.id} />
@@ -63,6 +89,7 @@ export function LessonView({ unit, lesson }: { unit: Unit; lesson: LessonT }) {
           </div>
         </div>
       </article>
+      <Toc lesson={lesson} />
     </div>
   );
 }

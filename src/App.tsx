@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { units, isBuilt } from './content';
 import { globalStats, unitStats, useStore } from './progress';
-import { applyZoom, zoomDelta } from './settings';
+import { applyUiZoom, zoomDelta } from './settings';
 import { useRoute, go } from './router';
 import { Search } from './components/Search';
 import { Settings } from './components/Settings';
@@ -17,10 +17,17 @@ function useGlobalZoom() {
       const d = zoomDelta(e);
       if (d === null) return;
       e.preventDefault();
-      if (!(e.target as HTMLElement | null)?.closest?.('.monaco-editor')) applyZoom(d);
+      if (!(e.target as HTMLElement | null)?.closest?.('.monaco-editor')) applyUiZoom(d);
+    };
+    const w = (e: WheelEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      if ((e.target as HTMLElement | null)?.closest?.('.monaco-editor')) return;
+      e.preventDefault();
+      applyUiZoom(e.deltaY < 0 ? 1 : -1);
     };
     window.addEventListener('keydown', h);
-    return () => window.removeEventListener('keydown', h);
+    window.addEventListener('wheel', w, { passive: false });
+    return () => { window.removeEventListener('keydown', h); window.removeEventListener('wheel', w); };
   }, []);
 }
 

@@ -90,7 +90,7 @@ public class Main {
         System.out.println(s);
     }
 }
-`, answer: 'Ana (grade 12) Ana (grade 12) Ana (grade 12)', explanation: 'The first promote makes grade 12. The second tries 13 and the setter rejects it. 40 is rejected too.' },
+`, answer: 'Ana (grade 12)\nAna (grade 12)\nAna (grade 12)', explanation: 'The first promote makes grade 12. The second tries 13 and the setter rejects it. 40 is rejected too.' },
       { type: 'predict', id: 'p-cmp', question: 'What does this program print?',
         code: j`class Person {
     private int age;
@@ -108,7 +108,7 @@ public class Main {
         System.out.println(y.isOlderThan(x));
     }
 }
-`, answer: 'true false', explanation: 'Inside Person, a method may read another Person\'s private age.' },
+`, answer: 'true\nfalse', explanation: 'Inside Person, a method may read another Person\'s private age.' },
       { type: 'code', id: 'acc-account', prompt: 'Complete the §Account§ class. §deposit(amount)§ adds to the balance only if the amount is positive. §getBalance()§ returns the balance. Expected: §Balance: 150§.',
         expected: 'Balance: 150',
         starter: j`class Account {
@@ -289,7 +289,7 @@ public class Main {
         System.out.println(Ticket.getIssued());
     }
 }
-`, answer: '1 3 3', explanation: 'Each ticket copies the shared counter at creation: 1, 2, 3. After three tickets issued is 3.' },
+`, answer: '1 3\n3', explanation: 'Each ticket copies the shared counter at creation: 1, 2, 3. After three tickets issued is 3.' },
       { type: 'predict', id: 'p-shared', question: 'What does this program print?',
         code: j`class Dial {
     static int clicks = 0;
@@ -800,7 +800,7 @@ public class Main {
         System.out.println(v.unlock("blue"));
     }
 }
-`, answer: 'false true false', explanation: 'The third attempt is refused because the vault limits tries, even though the guess is right.' },
+`, answer: 'false\ntrue\nfalse', explanation: 'The third attempt is refused because the vault limits tries, even though the guess is right.' },
       { type: 'code', id: 'eth-mask', prompt: 'Protect privacy in output. Write §mask(String card)§ that returns "****" followed by the last 4 characters. Expected: §****5678§.',
         expected: '****5678',
         starter: j`public class Main {

@@ -186,7 +186,7 @@ If someone calls this with §count§ equal to 0 the precondition is broken, and 
         System.out.println(7 / 2);
     }
 }
-`, answer: '3.5 3', explanation: 'The cast makes the first division a double (3.5). The second is integer division (3).' },
+`, answer: '3.5\n3', explanation: 'The cast makes the first division a double (3.5). The second is integer division (3).' },
       { type: 'code', id: 'imp-safe', prompt: 'Make this method safer: if §count§ is 0 (the precondition is broken), return 0.0 instead of crashing or producing NaN. The program should print §0.0§ then §2.5§.',
         expected: '0.0\n2.5',
         starter: j`public class Main {
@@ -215,7 +215,7 @@ If someone calls this with §count§ equal to 0 the precondition is broken, and 
     }
 }
 `, hint: 'Add an if statement at the top that returns 0.0 when count is 0.' },
-      { type: 'code', id: 'imp-test', prompt: 'Write a tiny test harness. The method §isTeen(age)§ is done. In §main§ print §isTeen§ for the ages 12, 13, 19 and 20 (one per line) to check the boundaries. Expected output: §false true true false§ on separate lines.',
+      { type: 'code', id: 'imp-test', prompt: 'Write a tiny test harness. The method §isTeen(age)§ is done. In §main§ print §isTeen§ for the ages 12, 13, 19 and 20 (one per line) to check the boundaries. Expected output: §false§, §true§, §true§, §false§ on separate lines.',
         expected: 'false\ntrue\ntrue\nfalse',
         starter: j`public class Main {
     public static boolean isTeen(int age) {
@@ -319,7 +319,7 @@ public class Main {
         System.out.println(b.describe());
     }
 }
-`, answer: 'Rex is 4 Bo is 9', explanation: 'Each Dog keeps its own name and age.' },
+`, answer: 'Rex is 4\nBo is 9', explanation: 'Each Dog keeps its own name and age.' },
       { type: 'predict', id: 'p-defaults', question: 'The constructor sets nothing. What does this print?',
         code: j`class Box {
     private int size;
@@ -487,7 +487,7 @@ public class Main {
         System.out.println(b);
     }
 }
-`, answer: 'Kai:10 Mei:50', explanation: 'The one-argument call uses the first constructor (score 10); the two-argument call uses the second.' },
+`, answer: 'Kai:10\nMei:50', explanation: 'The one-argument call uses the first constructor (score 10); the two-argument call uses the second.' },
       { type: 'predict', id: 'p-alias', question: 'Two variables refer to the same object. What is printed?',
         code: j`class Cell {
     private int value;
@@ -644,7 +644,7 @@ public static void rename(Pet p) {
         System.out.println("out: " + v);
     }
 }
-`, answer: 'in: 107 out: 7', explanation: 'n is a copy of v. v stays 7.' },
+`, answer: 'in: 107\nout: 7', explanation: 'n is a copy of v. v stays 7.' },
       { type: 'predict', id: 'p-ref', question: 'What does this program print?',
         code: j`class Tag {
     private String text;

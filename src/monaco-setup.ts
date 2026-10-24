@@ -8,7 +8,7 @@ import EditorWorker from 'monaco-editor/editor/editor.worker?worker';
   getWorker: () => new EditorWorker(),
 };
 
-function applyTheme({ colors: c }: Settings) {
+function applyTheme({ colors: c, accent: a }: Settings) {
   monaco.editor.defineTheme('void', {
     base: 'vs-dark',
     inherit: true,
@@ -34,8 +34,8 @@ function applyTheme({ colors: c }: Settings) {
       'editorLineNumber.activeForeground': '#8a8a93',
       'editor.lineHighlightBackground': '#0c0c0f',
       'editor.lineHighlightBorder': '#00000000',
-      'editor.selectionBackground': '#67e8f933',
-      'editorCursor.foreground': '#67e8f9',
+      'editor.selectionBackground': '#' + a + '33',
+      'editorCursor.foreground': '#' + a,
       'editorIndentGuide.background1': '#14141a',
       'editorWidget.background': '#08080a',
       'editorSuggestWidget.background': '#08080a',
@@ -47,10 +47,11 @@ function applyTheme({ colors: c }: Settings) {
 }
 
 let lastColors = getSettings().colors;
+let lastAccent = getSettings().accent;
 applyTheme(getSettings());
 subscribe(() => {
   const s = getSettings();
-  if (s.colors !== lastColors) { lastColors = s.colors; applyTheme(s); }
+  if (s.colors !== lastColors || s.accent !== lastAccent) { lastColors = s.colors; lastAccent = s.accent; applyTheme(s); }
 });
 
 loader.config({ monaco });

@@ -79,7 +79,7 @@ class Dog extends Pet {
     public Dog(String name) { super(name); }
     public void fetch() { System.out.println(getName() + " fetches."); }
 }
-`, answer: 'Rex is eating. Rex fetches.', explanation: '§eat()§ is inherited from §Pet§; §fetch()§ is defined in §Dog§. Both use the name "Rex".' },
+`, answer: 'Rex is eating.\nRex fetches.', explanation: '§eat()§ is inherited from §Pet§; §fetch()§ is defined in §Dog§. Both use the name "Rex".' },
       { type: 'code', id: 'sub-bird', prompt: 'The §Pet§ class is finished. Write a §Bird§ subclass that extends §Pet§ and adds a §sing()§ method printing §<name> sings.§ using §getName()§. The constructor is provided.',
         expected: 'Tweety is eating.\nTweety sings.',
         starter: j`public class Main {
@@ -229,7 +229,7 @@ class B extends A {
 class C extends B {
     public C() { System.out.println("C"); }
 }
-`, answer: 'A B C', explanation: 'Each constructor first runs its superclass constructor (hidden §super();§), so the output goes from the top of the hierarchy down: A, B, C.' },
+`, answer: 'A\nB\nC', explanation: 'Each constructor first runs its superclass constructor (hidden §super();§), so the output goes from the top of the hierarchy down: A, B, C.' },
       { type: 'predict', id: 'p-super-args', question: 'What does this program print?',
         code: j`public class Main {
     public static void main(String[] args) {
@@ -438,7 +438,7 @@ class Dog extends Animal {
 
 class Fish extends Animal {
 }
-`, answer: '... Woof ...', explanation: '§Fish§ does not override §sound()§, so it uses the inherited version, which returns "...".' },
+`, answer: '...\nWoof\n...', explanation: '§Fish§ does not override §sound()§, so it uses the inherited version, which returns "...".' },
       { type: 'code', id: 'ov-cat', prompt: 'Override §describe()§ in §Cat§ so it returns §A cat that purrs§. Then run: the first line is the generic text and the second is the cat text.',
         expected: 'An animal\nA cat that purrs',
         starter: j`public class Main {

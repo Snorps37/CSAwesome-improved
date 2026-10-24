@@ -110,7 +110,7 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
         </motion.button>
         <button className="link" onClick={reset}>reset</button>
         {block.solution && <button className="link" onClick={() => setShowSol((s) => !s)}>{showSol ? 'hide solution' : 'show solution'}</button>}
-        {block.hint && <span className="link" title={block.hint}>hint: {block.hint}</span>}
+        {block.hint && <span className="link" title={block.hint.replace(/§/g, '')}>hint: {block.hint.replace(/§/g, '')}</span>}
         <AnimatePresence mode="wait">
           {done && required ? (
             <motion.span key="d" className="status ok" initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}>done</motion.span>

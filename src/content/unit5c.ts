@@ -352,7 +352,7 @@ class Tag {
         return text.equals(x.text);
     }
 }
-`, answer: '<hi> true false', explanation: 'The Object variable still uses Tag\'s toString. The two Tag objects have equal text, but they are separate objects.' },
+`, answer: '<hi>\ntrue\nfalse', explanation: 'The Object variable still uses Tag\'s toString. The two Tag objects have equal text, but they are separate objects.' },
     ],
   },
   {

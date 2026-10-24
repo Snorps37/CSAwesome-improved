@@ -267,7 +267,7 @@ class Cat extends Animal {
     @Override
     public String sound() { return "Meow"; }
 }
-`, answer: 'Woof Meow ...', explanation: 'Each element\'s own version of §sound()§ runs, even though every variable is typed §Animal§.' },
+`, answer: 'Woof\nMeow\n...', explanation: 'Each element\'s own version of §sound()§ runs, even though every variable is typed §Animal§.' },
       { type: 'predict', id: 'p-poly-super', question: 'What does this program print? Trace carefully.',
         code: j`public class Main {
     public static void main(String[] args) {
@@ -286,7 +286,7 @@ class B extends A {
     @Override
     public void hello() { System.out.println("B.hello"); }
 }
-`, answer: 'A.show B.hello B.hello', explanation: '§show()§ is not overridden, so A\'s version runs. Inside it, §hello()§ is called on the same object, which is a §B§, so B\'s §hello§ runs. The last line also runs B\'s §hello§.' },
+`, answer: 'A.show\nB.hello\nB.hello', explanation: '§show()§ is not overridden, so A\'s version runs. Inside it, §hello()§ is called on the same object, which is a §B§, so B\'s §hello§ runs. The last line also runs B\'s §hello§.' },
       { type: 'code', id: 'poly-shapes', prompt: 'Add a §Triangle§ subclass of §Shape§ that overrides §name()§ to return §triangle§ and §area()§ to return §base * height / 2§ (fields set in the constructor). The loop in §main§ should not change. Expected: §rectangle 12§, §triangle 10§.',
         expected: 'rectangle 12\ntriangle 10',
         starter: j`public class Main {
@@ -499,7 +499,7 @@ class Dog {
     @Override
     public String toString() { return name + " (" + age + ")"; }
 }
-`, answer: 'Rex (3) Pet: Rex (3)', explanation: 'Printing or concatenating an object calls its §toString()§ automatically.' },
+`, answer: 'Rex (3)\nPet: Rex (3)', explanation: 'Printing or concatenating an object calls its §toString()§ automatically.' },
       { type: 'predict', id: 'p-equals', question: 'What does this program print?',
         code: j`public class Main {
     public static void main(String[] args) {
@@ -523,7 +523,7 @@ class Dog {
         return name.equals(d.name) && age == d.age;
     }
 }
-`, answer: 'false true true', explanation: '§a§ and §b§ are separate objects (§==§ is false) with equal contents (§equals§ is true). §c§ is another name for §a§.' },
+`, answer: 'false\ntrue\ntrue', explanation: '§a§ and §b§ are separate objects (§==§ is false) with equal contents (§equals§ is true). §c§ is another name for §a§.' },
       { type: 'code', id: 'obj-tostring', prompt: 'Override §toString()§ in §Book§ so that printing a book shows §Title by Author§. Expected: §Dune by Herbert§.',
         expected: 'Dune by Herbert',
         starter: j`public class Main {

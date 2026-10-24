@@ -94,7 +94,7 @@ Good comments say *why* or *what*, not just repeat the code.
 // System.out.println("B");
 /* System.out.println("C");
    System.out.println("D"); */
-System.out.println("E");`, 'A E', 'B, C and D are all inside comments. Each println prints on its own line, so the output is A, then E.'),
+System.out.println("E");`, 'A\nE', 'B, C and D are all inside comments. Each println prints on its own line, so the output is A, then E.'),
     q('q-comment1', 'Which is a valid multi-line comment?', ['// line one // line two', '/* line one and line two */', '<!-- comment -->', '** comment **'], 1),
     q('q-pre', 'A method says "Precondition: n > 0". Who is responsible for making sure n > 0?', ['The compiler', 'The code that calls the method', 'The method, automatically', 'Nobody'], 1,
       'The caller must satisfy the precondition. The method is only guaranteed to work when it is true.'),
@@ -282,7 +282,7 @@ System.out.println(a.getX());`, '9.0', 'b is an alias of a: both references poin
     p('p-newstr', 'What does this print?', j`String a = new String("cat");
 String b = new String("cat");
 System.out.println(a == b);
-System.out.println(a.equals(b));`, 'false true', '== compares references, and two separate objects were created. equals compares the characters.'),
+System.out.println(a.equals(b));`, 'false\ntrue', '== compares references, and two separate objects were created. equals compares the characters.'),
     q('q-con1', 'Which call does **not** match any Dot constructor?', ['new Dot()', 'new Dot(2, 3)', 'new Dot("red")', 'new Dot("red", 2, 3)'], 3, 'The color must come last: new Dot(2, 3, "red").'),
     q('q-con2', 'What is a reference variable?', ['A variable that holds an object itself', 'A variable that holds the address of an object', 'A variable that never changes', 'A variable of type int'], 1),
     q('q-con3', 'After §Dot p = new Dot(); Dot r = p;§, how many Dot objects exist?', ['0', '1', '2', 'It depends'], 1, 'Only one new was executed, so there is only one object with two references.'),
