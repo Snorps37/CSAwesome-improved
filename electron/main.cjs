@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Menu, shell } = require('electron');
+const { app, BrowserWindow, Menu, shell, dialog } = require('electron');
+const { spawnSync } = require('child_process');
 const path = require('path');
 const { pathToFileURL } = require('url');
 
@@ -24,7 +25,20 @@ function showWindow() {
   win.focus();
 }
 
+function checkJdk() {
+  const r = spawnSync('javac', ['-version'], { windowsHide: true, timeout: 10000 });
+  if (r.error || r.status !== 0) {
+    dialog.showMessageBoxSync({
+      type: 'warning',
+      title: 'JDK not found',
+      message: 'Java (javac) was not found.',
+      detail: 'CSAwesome needs a JDK to compile and run code. Install one (for example Adoptium Temurin from https://adoptium.net), make sure javac is on your PATH, then restart the app. You can still read lessons without it.',
+    });
+  }
+}
+
 async function createWindow() {
+  checkJdk();
   const port = await startApi();
   win = new BrowserWindow({
     width: 1280,

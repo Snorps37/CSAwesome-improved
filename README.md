@@ -1,6 +1,12 @@
 # CSAwesome Improved
 
+![CSAwesome Improved screenshot](docs/screenshot.png)
+
 Interactive AP CS A (Java) lessons with an in-app code editor and Java runner.
+
+## Download
+
+Windows users: grab the installer (`.exe`) from the [Releases](../../releases) page. A JDK (`javac` on PATH, e.g. [Adoptium](https://adoptium.net)) must be installed to run code.
 
 ## Requirements
 

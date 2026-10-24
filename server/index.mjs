@@ -10,6 +10,8 @@ import { fileURLToPath } from 'node:url';
 const PORT = Number(process.env.PORT || 3001);
 const DIST = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.map': 'application/json', '.wasm': 'application/wasm' };
+const WIN = process.platform === 'win32';
+const NO_JDK = 'Java (javac) was not found. Install a JDK (for example Adoptium Temurin from https://adoptium.net), make sure `javac` is on your PATH, then restart the app.';
 const TIMEOUT_MS = 5000;
 const COMPILE_TIMEOUT_MS = 15000;
 const MAX_OUT = 256 * 1024;
@@ -19,12 +21,16 @@ const DOT_SRC = await readFile(path.join(here, 'Dot.java'), 'utf8');
 
 function exec(cmd, args, { cwd, timeout }) {
   return new Promise((resolve) => {
-    const child = spawn(cmd, args, { cwd, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(cmd, args, { cwd, detached: !WIN, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    const kill = () => {
+      if (WIN) { try { spawn('taskkill', ['/pid', String(child.pid), '/t', '/f'], { windowsHide: true, stdio: 'ignore' }); } catch {} }
+      else { try { process.kill(-child.pid, 'SIGKILL'); } catch {} }
+    };
     let stdout = '', stderr = '', truncated = false, timedOut = false;
     const add = (which) => (d) => {
       const room = MAX_OUT - (stdout.length + stderr.length);
       if (room <= 0) {
-        if (!truncated) { truncated = true; try { process.kill(-child.pid, 'SIGKILL'); } catch {} }
+        if (!truncated) { truncated = true; kill(); }
         return;
       }
       const s = d.toString('utf8').slice(0, room);
@@ -34,9 +40,9 @@ function exec(cmd, args, { cwd, timeout }) {
     child.stderr.on('data', add('e'));
     const timer = setTimeout(() => {
       timedOut = true;
-      try { process.kill(-child.pid, 'SIGKILL'); } catch {}
+      kill();
     }, timeout);
-    child.on('error', (e) => { clearTimeout(timer); resolve({ stdout, stderr: stderr + String(e), code: -1, timedOut, truncated }); });
+    child.on('error', (e) => { clearTimeout(timer); resolve({ stdout, stderr: stderr + String(e), code: -1, timedOut, truncated, missing: e.code === 'ENOENT' }); });
     child.on('close', (code) => { clearTimeout(timer); resolve({ stdout, stderr, code, timedOut, truncated }); });
   });
 }
@@ -50,6 +56,7 @@ async function runCode(code) {
     await writeFile(path.join(dir, 'Dot.java'), DOT_SRC);
     await writeFile(path.join(dir, cls + '.java'), code);
     const c = await exec('javac', ['-encoding', 'UTF-8', '-Xlint:none', cls + '.java', 'Dot.java'], { cwd: dir, timeout: COMPILE_TIMEOUT_MS });
+    if (c.missing) return { stdout: '', stderr: NO_JDK, compileError: true };
     if (c.code !== 0) {
       const msg = (c.stderr || c.stdout || 'Compilation failed').split(dir + path.sep).join('');
       return { stdout: '', stderr: msg.trim(), compileError: true };
@@ -81,7 +88,11 @@ function serveStatic(req, res) {
 }
 
 // Progress lives in a file, not browser storage: the app's port (and so its origin) can change between launches.
-const DATA_DIR = path.join(process.env.XDG_DATA_HOME || path.join(homedir(), '.local', 'share'), 'csawesome');
+// CSA_DATA_DIR overrides; never write next to the code (read-only asar / install dir when packaged).
+const DATA_BASE = process.platform === 'win32' ? (process.env.APPDATA || path.join(homedir(), 'AppData', 'Roaming'))
+  : process.platform === 'darwin' ? path.join(homedir(), 'Library', 'Application Support')
+  : (process.env.XDG_DATA_HOME || path.join(homedir(), '.local', 'share'));
+const DATA_DIR = process.env.CSA_DATA_DIR || path.join(DATA_BASE, 'csawesome');
 const PROGRESS_FILE = path.join(DATA_DIR, 'progress.json');
 
 function progressApi(req, res) {
