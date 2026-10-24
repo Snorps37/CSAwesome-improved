@@ -20,7 +20,8 @@
     "monaco-editor": "^0.57.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
@@ -28,9 +29,9 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "concurrently": "^10.0.6",
+    "cross-env": "^7.0.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
-    "cross-env": "^7.0.3",
     "wait-on": "^8.0.0"
   },
   "main": "electron/main.cjs",

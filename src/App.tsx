@@ -4,6 +4,7 @@ import { units, isBuilt } from './content';
 import { globalStats, unitStats, useStore } from './progress';
 import { applyZoom, zoomDelta } from './settings';
 import { useRoute, go } from './router';
+import { Search } from './components/Search';
 import { Settings } from './components/Settings';
 import { Ring } from './components/Ring';
 import { LessonStatusDot, LessonView } from './components/Lesson';
@@ -40,6 +41,7 @@ function Header() {
     <header className="header">
       <a className="brand" href="#/"><i />csa/java</a>
       <div className="nav">
+        <Search />
         <a href="#/about">about</a>
         <Settings />
         <span className="pct">{Math.round(g.pct * 100)}%</span>
