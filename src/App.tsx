@@ -4,6 +4,7 @@ import { units, isBuilt } from './content';
 import { globalStats, unitStats, useStore } from './progress';
 import { applyUiZoom, zoomDelta } from './settings';
 import { useRoute, go } from './router';
+import { Sandbox } from './components/Sandbox';
 import { Search } from './components/Search';
 import { Settings } from './components/Settings';
 import { Ring } from './components/Ring';
@@ -49,6 +50,7 @@ function Header() {
       <a className="brand" href="#/"><i />csa/java</a>
       <div className="nav">
         <Search />
+        <a href="#/sandbox">sandbox</a>
         <a href="#/about">about</a>
         <Settings />
         <span className="pct">{Math.round(g.pct * 100)}%</span>
@@ -175,6 +177,7 @@ function Routes() {
   const route = useRoute();
   const m = /^\/u\/(\d+)(?:\/([\w-]+))?$/.exec(route);
   if (route === '/') return <Overview />;
+  if (route === '/sandbox') return <Sandbox />;
   if (route === '/about') return <About />;
   if (m) {
     const u = units.find((x) => x.id === Number(m[1]));

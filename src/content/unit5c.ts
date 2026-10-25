@@ -1,10 +1,11 @@
+import { unit5d, mixedPractice, summaryCode } from './unit5d';
 import type { Lesson } from './types';
 import { md } from './md';
 
 const j = String.raw;
 
 // Unit 5 wrap-up: summary, practice, multiple choice, practice test, FRQ, projects. Original wording.
-export const unit5c: Lesson[] = [
+const existing: Lesson[] = [
   {
     id: '5-8',
     title: 'Unit Summary',
@@ -248,114 +249,6 @@ class Poly {
     ],
   },
   {
-    id: '5-11',
-    title: 'Practice Test',
-    blocks: [
-      { type: 'text', md: md`A mixed set: trace the programs, then type exactly what they print. Take your time and avoid running them until you have an answer.` },
-      { type: 'quiz', id: 'pt1', question: 'Which keyword is used to create a subclass?',
-        choices: ['implements', 'extends', 'inherits', 'super'], answer: 1, explanation: '§class Child extends Parent§.' },
-      { type: 'quiz', id: 'pt2', question: 'What is wrong with this class?\n\n§class B extends A { private int y; public B(int y) { this.y = y; super(); } }§',
-        choices: ['Nothing is wrong', 'super() must be the first statement', 'y cannot be private', 'B cannot extend A'], answer: 1, explanation: 'The call to the superclass constructor has to come first.' },
-      { type: 'quiz', id: 'pt3', question: 'A class hierarchy: §Animal§, §Dog extends Animal§, §Puppy extends Dog§. Which assignment is legal?',
-        choices: ['Puppy p = new Dog();', 'Dog d = new Puppy();', 'Puppy p = new Animal();', 'Dog d = new Animal();'], answer: 1, explanation: 'A Puppy is a Dog. The reverse assignments would need a cast and would not be safe.' },
-      { type: 'quiz', id: 'pt4', question: 'Why does Java use the object\'s actual class (not the variable type) to decide which overridden method runs?',
-        choices: ['It is faster', 'This lets one piece of code work with many subclasses', 'Variables have no type', 'It prevents all errors'], answer: 1, explanation: 'That behavior is polymorphism, and it allows general code that works for any subclass.' },
-      { type: 'quiz', id: 'pt5', question: 'Which method header correctly overrides §toString()§?',
-        choices: ['public String toString(String s)', 'public void toString()', 'public String toString()', 'private String toString()'], answer: 2, explanation: 'Same name, no parameters, return type String, and public access.' },
-      { type: 'quiz', id: 'pt6', question: 'The §==§ operator on two object references tests...',
-        choices: ['Whether they have equal contents', 'Whether they refer to the same object', 'Whether their classes match', 'Whether toString() matches'], answer: 1, explanation: 'Use §equals§ for content; §==§ compares references.' },
-      { type: 'predict', id: 'pt7', question: 'What is printed?',
-        code: j`public class Main {
-    public static void main(String[] args) {
-        Base b = new Derived();
-        b.print();
-    }
-}
-
-class Base {
-    public void print() { System.out.println("Base " + value()); }
-    public int value() { return 1; }
-}
-
-class Derived extends Base {
-    @Override
-    public int value() { return 2; }
-}
-`, answer: 'Base 2', explanation: '§print()§ is inherited from Base, but the call to §value()§ on this object uses Derived\'s override.' },
-      { type: 'predict', id: 'pt8', question: 'What is printed?',
-        code: j`public class Main {
-    public static void main(String[] args) {
-        Child c = new Child(7);
-        System.out.println(c.total());
-    }
-}
-
-class Parent {
-    private int a;
-    public Parent(int a) { this.a = a; }
-    public int total() { return a; }
-}
-
-class Child extends Parent {
-    private int b;
-    public Child(int b) {
-        super(b * 2);
-        this.b = b;
-    }
-    @Override
-    public int total() { return super.total() + b; }
-}
-`, answer: '21', explanation: 'a is 14 (7 * 2), b is 7, so total is 14 + 7 = 21.' },
-      { type: 'predict', id: 'pt9', question: 'What is printed?',
-        code: j`public class Main {
-    public static void main(String[] args) {
-        Item[] items = { new Item("pen"), new Special("ink") };
-        String out = "";
-        for (Item i : items) {
-            out += i.label() + ";";
-        }
-        System.out.println(out);
-    }
-}
-
-class Item {
-    private String name;
-    public Item(String name) { this.name = name; }
-    public String label() { return name; }
-}
-
-class Special extends Item {
-    public Special(String name) { super(name.toUpperCase()); }
-    @Override
-    public String label() { return "*" + super.label(); }
-}
-`, answer: 'pen;*INK;', explanation: 'The first item prints its plain name. The Special passes "INK" up and adds a star.' },
-      { type: 'predict', id: 'pt10', question: 'What is printed?',
-        code: j`public class Main {
-    public static void main(String[] args) {
-        Object o = new Tag("hi");
-        System.out.println(o);
-        Tag t = new Tag("hi");
-        System.out.println(t.equals(o));
-        System.out.println(t == o);
-    }
-}
-
-class Tag {
-    private String text;
-    public Tag(String text) { this.text = text; }
-    @Override
-    public String toString() { return "<" + text + ">"; }
-    @Override
-    public boolean equals(Object other) {
-        Tag x = (Tag) other;
-        return text.equals(x.text);
-    }
-}
-`, answer: '<hi>\ntrue\nfalse', explanation: 'The Object variable still uses Tag\'s toString. The two Tag objects have equal text, but they are separate objects.' },
-    ],
-  },
-  {
     id: '5-12',
     title: 'FRQ Practice',
     blocks: [
@@ -369,8 +262,8 @@ The AP free-response section includes a **class design** question: given a descr
 
 The two tasks below follow that style. Write the code, run it, and compare the output.
 ` },
-      { type: 'code', id: 'frq-account', prompt: 'A §BankAccount§ has a balance and a §withdraw(int amount)§ that subtracts only if enough money is available. Write §SavingsAccount extends BankAccount§: it has a private §fee§ (set in its constructor), and it overrides §withdraw§ so that each withdrawal that succeeds also deducts the fee (a withdrawal of 20 with fee 1 removes 21). Use §super.withdraw§. Expected balance after the two withdrawals: §58§ (100 - 21 - 21; the third attempt of 500 is refused).',
-        expected: 'Balance: 58',
+      { type: 'code', id: 'frq-account', prompt: 'A §BankAccount§ has a balance and a §withdraw(int amount)§ that subtracts only if enough money is available. Write §SavingsAccount extends BankAccount§: it has a private §fee§ (set in its constructor), and it overrides §withdraw§ so that each withdrawal that succeeds also deducts the fee (a withdrawal of 20 with fee 1 removes 21). Refuse the entire transaction if amount plus fee exceeds the balance; assume nonnegative fees and withdrawal amounts. Use §super.withdraw§. Expected balance after the two withdrawals: §58§ (100 - 21 - 21; the third attempt of 500 is refused). The final two lines confirm that a balance of 20 cannot cover a withdrawal of 20 plus fee 1: print false and leave 20.',
+        expected: 'Balance: 58\nfalse\n20',
         starter: j`public class Main {
     public static void main(String[] args) {
         SavingsAccount s = new SavingsAccount(100, 1);
@@ -378,6 +271,9 @@ The two tasks below follow that style. Write the code, run it, and compare the o
         s.withdraw(20);
         s.withdraw(500);
         System.out.println("Balance: " + s.getBalance());
+        SavingsAccount low = new SavingsAccount(20, 1);
+        System.out.println(low.withdraw(20));
+        System.out.println(low.getBalance());
     }
 }
 
@@ -403,6 +299,9 @@ class BankAccount {
         s.withdraw(20);
         s.withdraw(500);
         System.out.println("Balance: " + s.getBalance());
+        SavingsAccount low = new SavingsAccount(20, 1);
+        System.out.println(low.withdraw(20));
+        System.out.println(low.getBalance());
     }
 }
 
@@ -427,14 +326,11 @@ class SavingsAccount extends BankAccount {
     }
     @Override
     public boolean withdraw(int amount) {
-        if (super.withdraw(amount)) {
-            super.withdraw(fee);
-            return true;
-        }
-        return false;
+        return amount >= 0 && amount <= getBalance() - fee
+            && super.withdraw(amount + fee);
     }
 }
-`, hint: 'Call super.withdraw(amount) in an if; when it returns true, also call super.withdraw(fee).' },
+`, hint: 'Check that the balance covers amount plus fee, then make one superclass withdrawal for the combined amount.' },
       { type: 'code', id: 'frq-media', prompt: 'A §MediaItem§ has a title and a §describe()§ that returns the title. Write §Song§ (with an artist) and §Movie§ (with a length in minutes) as subclasses. §Song.describe()§ returns §title - artist§; §Movie.describe()§ returns §title (N min)§. Expected output: three lines as shown in the test.',
         expected: 'Poster\nBlue - Ana\nTrip (95 min)',
         starter: j`public class Main {
@@ -493,162 +389,21 @@ class Movie extends MediaItem {
 `, hint: 'Use getTitle() since title is private in MediaItem.' },
     ],
   },
-  {
-    id: '5-13',
-    title: 'Projects',
-    blocks: [
-      { type: 'text', md: md`
-Open-ended projects. Run them, then extend them with your own ideas.
 
-1. **Zoo.** Add two new animals and give them unique behavior. Add a method to the base class that uses an overridden method (so your new animals inherit it for free).
-2. **Dot shapes.** Make a base class for shapes that draw with the Dot, and subclasses for different polygons, a star, and a spiral.
-` },
-      { type: 'code', id: 'proj-zoo', completeOnRun: true,
-        prompt: 'A zoo simulation. Add at least two new animal subclasses (for example §Cow§ and §Snake§), put them in the array, and see the polymorphic loop handle them.',
-        starter: j`public class Main {
-    public static void main(String[] args) {
-        Animal[] zoo = { new Dog("Rex"), new Cat("Tom") };
-        for (Animal a : zoo) {
-            a.introduce();
-        }
-    }
-}
-
-class Animal {
-    private String name;
-    public Animal(String name) { this.name = name; }
-    public String getName() { return name; }
-    public String sound() { return "..."; }
-    public void introduce() {
-        System.out.println(name + " the " + getClass().getSimpleName() + " says " + sound());
-    }
-}
-
-class Dog extends Animal {
-    public Dog(String name) { super(name); }
-    @Override
-    public String sound() { return "Woof"; }
-}
-
-class Cat extends Animal {
-    public Cat(String name) { super(name); }
-    @Override
-    public String sound() { return "Meow"; }
-}
-`,
-        solution: j`public class Main {
-    public static void main(String[] args) {
-        Animal[] zoo = { new Dog("Rex"), new Cat("Tom"), new Cow("Bessie") };
-        for (Animal a : zoo) {
-            a.introduce();
-        }
-    }
-}
-
-class Animal {
-    private String name;
-    public Animal(String name) { this.name = name; }
-    public String getName() { return name; }
-    public String sound() { return "..."; }
-    public void introduce() {
-        System.out.println(name + " the " + getClass().getSimpleName() + " says " + sound());
-    }
-}
-
-class Dog extends Animal {
-    public Dog(String name) { super(name); }
-    @Override
-    public String sound() { return "Woof"; }
-}
-
-class Cat extends Animal {
-    public Cat(String name) { super(name); }
-    @Override
-    public String sound() { return "Meow"; }
-}
-
-class Cow extends Animal {
-    public Cow(String name) { super(name); }
-    @Override
-    public String sound() { return "Moo"; }
-}
-` },
-      { type: 'code', id: 'proj-dot', dot: true, completeOnRun: true,
-        prompt: 'A family of Dot shapes. Add a §Star§ subclass (turn 144 degrees, 5 points) or a §Spiral§, and add it to the array.',
-        starter: j`public class Main {
-    public static void main(String[] args) {
-        Dot d = new Dot(-50, -50);
-        Figure[] figs = { new Figure(3, 40, "orange"), new Figure(5, 30, "cyan") };
-        for (Figure f : figs) {
-            f.draw(d);
-            d.penUp();
-            d.forward(60);
-            d.penDown();
-        }
-    }
-}
-
-class Figure {
-    private int sides;
-    private int length;
-    private String color;
-    public Figure(int sides, int length, String color) {
-        this.sides = sides;
-        this.length = length;
-        this.color = color;
-    }
-    public void draw(Dot d) {
-        d.setColor(color);
-        for (int i = 0; i < sides; i++) {
-            d.forward(length);
-            d.turnRight(360.0 / sides);
-        }
-    }
-}
-`,
-        solution: j`public class Main {
-    public static void main(String[] args) {
-        Dot d = new Dot(-50, -50);
-        Figure[] figs = { new Figure(3, 40, "orange"), new Figure(5, 30, "cyan"), new Star() };
-        for (Figure f : figs) {
-            f.draw(d);
-            d.penUp();
-            d.forward(60);
-            d.penDown();
-        }
-    }
-}
-
-class Figure {
-    private int sides;
-    private int length;
-    private String color;
-    public Figure(int sides, int length, String color) {
-        this.sides = sides;
-        this.length = length;
-        this.color = color;
-    }
-    public void draw(Dot d) {
-        d.setColor(color);
-        for (int i = 0; i < sides; i++) {
-            d.forward(length);
-            d.turnRight(360.0 / sides);
-        }
-    }
-}
-
-class Star extends Figure {
-    public Star() { super(5, 40, "violet"); }
-    @Override
-    public void draw(Dot d) {
-        d.setColor("violet");
-        for (int i = 0; i < 5; i++) {
-            d.forward(40);
-            d.turnRight(144);
-        }
-    }
-}
-` },
-    ],
-  },
 ];
+
+const moved = (source: Lesson, id: string, title: string): Lesson => ({
+  ...source, id, title, blocks: source.blocks.map(b => b.type === 'text' ? b : {...b, id: `${id}-${b.id}`})
+});
+const summary = moved(existing[0], '5-8', 'Inheritance Summary');
+summary.blocks.push(summaryCode);
+const frq = moved(existing[3], '5-9', 'Free Response Questions');
+frq.blocks.unshift({type:'text', md: '### Class design, parts A and B\n\nPart A: implement a stateful account subclass, preserving the superclass withdrawal contract. Part B: implement two media subclasses and process a heterogeneous collection. For each part, supply private fields, a constructor that initializes inherited state, and the required override. Read the driver as a test specification; do not replace its calls with literal output. Explain why the driver can use a superclass reference.'});
+for (const b of frq.blocks) if (b.type === 'code') {
+  if (b.id.endsWith('frq-account')) b.starter = b.starter.replace('// TODO: SavingsAccount', 'class SavingsAccount extends BankAccount {\n    // Part A: declare fee, implement constructor and boolean withdraw(int amount).\n}');
+  if (b.id.endsWith('frq-media')) b.starter = b.starter.replace('// TODO: Song and Movie', 'class Song extends MediaItem {\n    // Part B: artist, constructor, describe().\n}\nclass Movie extends MediaItem {\n    // Part B: minutes, constructor, describe().\n}');
+}
+const practice = moved(existing[1], '5-11', 'Code Practice with Object Oriented Concepts');
+practice.blocks = practice.blocks.filter(b => b.type !== 'code' || b.id.indexOf('cp-dot') < 0);
+export const unit5c: Lesson[] = [summary, frq, mixedPractice, practice,
+  moved(existing[2], '5-12', 'Inheritance Multiple-Choice Exercises'), ...unit5d];

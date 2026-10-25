@@ -49,6 +49,32 @@ public class Dot {
     public void penUp() { pen = false; emit("pen", "\"down\":false"); }
     public void clear() { emit("clear", "\"_\":0"); }
 
+    public void fill(boolean filled) { emit("fill", "\"filled\":" + filled); }
+    public void circle(double r) {
+        dimension(r);
+        emit("circle", "\"r\":" + num(r));
+    }
+    public void rect(double w, double h) {
+        dimension(w); dimension(h);
+        emit("rect", "\"w\":" + num(w) + ",\"h\":" + num(h));
+    }
+    public void line(double length) {
+        dimension(length);
+        double r = Math.toRadians(heading);
+        lineTo(x + length * Math.sin(r), y + length * Math.cos(r));
+    }
+    public void lineTo(double nx, double ny) {
+        if (!Double.isFinite(nx) || !Double.isFinite(ny)) throw new IllegalArgumentException("Coordinates must be finite");
+        x = nx; y = ny;
+        emit("line", "\"x\":" + num(x) + ",\"y\":" + num(y));
+    }
+    public void text(String text) { emit("text", "\"text\":\"" + esc(text) + "\""); }
+
+    private static void dimension(double value) {
+        if (!Double.isFinite(value) || value < 0) throw new IllegalArgumentException("Dimensions must be finite and nonnegative");
+    }
+
+
     public double getX() { return x; }
     public double getY() { return y; }
     public double getHeading() { return heading; }

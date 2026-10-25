@@ -4,14 +4,14 @@ import { w } from './u4util';
 
 const j = String.raw;
 
-// Unit 4 lessons 4.9-4.15 (ArrayList algorithms, searching, sorting, recursion, 2D arrays). Original wording.
+// Core collection concepts; lesson IDs follow the complete Unit 4 sequence.
 export const unit4b: Lesson[] = [
   {
-    id: '4-9',
-    title: 'ArrayList Algorithms',
+    id: '4-10',
+    title: 'Implementing ArrayList Algorithms',
     blocks: [
       { type: 'text', md: md`
-The array patterns from 4.4 carry over to ArrayList. Only the syntax changes: §size()§, §get(i)§, §set(i, x)§.
+The array patterns from 4.5 carry over to ArrayList. Only the syntax changes: §size()§, §get(i)§, §set(i, x)§.
 
 **Sum, average, max, count**
 
@@ -172,8 +172,8 @@ System.out.println(a);`),
     ],
   },
   {
-    id: '4-10',
-    title: 'Searching',
+    id: '4-14',
+    title: 'Searching Algorithms',
     blocks: [
       { type: 'text', md: md`
 **Searching** means finding a target value in a collection, or discovering it is not there. The standard answer is to return the **index** where it was found, or **-1** when it is absent.
@@ -361,11 +361,11 @@ System.out.println("Count: " + count);`),
     ],
   },
   {
-    id: '4-11',
-    title: 'Sorting',
+    id: '4-15',
+    title: 'Sorting Algorithms',
     blocks: [
       { type: 'text', md: md`
-**Sorting** puts elements in order. Sorted data is easier to read, to search (binary search!), and to check for duplicates. This lesson covers two simple algorithms; merge sort is in 4.13.
+**Sorting** puts elements in order. Sorted data is easier to read, to search (binary search!), and to check for duplicates. This lesson covers two simple algorithms; merge sort is in 4.17.
 
 **Selection sort.** For each position i from the start: find the **smallest** value in the part you have not placed yet (positions i to the end), then **swap** it into position i. After pass i, the first i + 1 elements are final.
 
@@ -529,7 +529,7 @@ System.out.println();`),
     ],
   },
   {
-    id: '4-12',
+    id: '4-16',
     title: 'Recursion',
     blocks: [
       { type: 'text', md: md`
@@ -669,7 +669,7 @@ System.out.println();`,
     ],
   },
   {
-    id: '4-13',
+    id: '4-17',
     title: 'Recursive Searching and Sorting',
     blocks: [
       { type: 'text', md: md`
@@ -893,8 +893,8 @@ static void merge(int[] left, int[] right, int[] out) {
     ],
   },
   {
-    id: '4-14',
-    title: '2D Arrays',
+    id: '4-11',
+    title: '2D Array Creation and Access',
     blocks: [
       { type: 'text', md: md`
 A **2D array** stores a table: rows and columns. In Java it is an **array of arrays**: the outer array holds one array per row.
@@ -989,8 +989,8 @@ System.out.println(seats[0][1] + " " + seats[1][2] + " " + seats[0][0]);`),
     ],
   },
   {
-    id: '4-15',
-    title: '2D Array Traversals',
+    id: '4-12',
+    title: '2D Array Traversals: Nested Loops',
     blocks: [
       { type: 'text', md: md`
 To visit every element of a 2D array, use **nested loops**: one for the rows, one for the columns.

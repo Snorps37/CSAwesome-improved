@@ -12,11 +12,14 @@ import { DotStage } from './DotStage';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: string }) {
+export function CodeBlock({ block, lessonId, sandbox = false }: { block: CodeBlockT; lessonId: string; sandbox?: boolean }) {
   const store = useStore();
-  const done = !!store.done[lessonId]?.[block.id];
-  const required = isRequired(block);
-  const [code, setCode] = useState(() => getCode(block.id) ?? block.starter);
+  const done = !sandbox && !!store.done[lessonId]?.[block.id];
+  const required = !sandbox && isRequired(block);
+  const [code, setCode] = useState(() => {
+    if (sandbox) { try { return localStorage.getItem('csa-sandbox-v1') ?? block.starter; } catch { return block.starter; } }
+    return getCode(block.id) ?? block.starter;
+  });
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<ParsedRun | null>(null);
   const [verdict, setVerdict] = useState<{ ok: boolean; msg?: string } | null>(null);
@@ -35,8 +38,8 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
     const parsed = parseRun(await runJava(codeRef.current));
     setResult(parsed);
     setRunKey((k) => k + 1);
-    const v = checkRun(block, parsed);
     if (required) {
+      const v = checkRun(block, parsed);
       setVerdict(v);
       if (v.ok) markBlockDone(lessonId, block.id);
     }
@@ -67,9 +70,12 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
   };
 
   useEffect(() => {
-    const t = setTimeout(() => saveCode(block.id, code), 300);
+    const t = setTimeout(() => {
+      if (sandbox) { try { localStorage.setItem('csa-sandbox-v1', code); } catch { /* ignore */ } }
+      else saveCode(block.id, code);
+    }, 300);
     return () => clearTimeout(t);
-  }, [code, block.id]);
+  }, [code, block.id, sandbox]);
 
   const autoHeight = () => Math.min(460, Math.max(140, block.starter.split('\n').length * 21 + 12));
   const startDrag = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -80,9 +86,9 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
     el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
   };
 
-  const reset = () => { setCode(block.starter); setResult(null); setVerdict(null); };
+  const reset = () => { setCode(block.starter); setResult(null); setVerdict(null); setRunKey((k) => k + 1); };
   const hasDots = !!result && result.dots.length > 0;
-  const showCanvas = block.dot || hasDots;
+  const showCanvas = sandbox || block.dot || hasDots;
 
   return (
     <div className="block code-block">
@@ -131,24 +137,24 @@ export function CodeBlock({ block, lessonId }: { block: CodeBlockT; lessonId: st
       {showCanvas && <DotStage events={result?.dots ?? []} runKey={runKey} />}
 
       <AnimatePresence initial={false}>
-        {result && (
+        {(result || sandbox) && (
           <motion.div
             key={runKey} className="console"
             initial={{ opacity: 0, y: 8, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} transition={{ duration: 0.4, ease }}
           >
-            {(result.console || (!result.stderr && !hasDots)) && (
+            {(!result || result.console || (!result.stderr && (!hasDots || sandbox))) && (
               <div className="out" style={{ marginTop: 18 }}>
                 <div className="label">output</div>
-                <pre>{result.console || '(no output)'}</pre>
+                <pre>{result?.console || (result ? '(no output)' : 'Run your program to see output.')}</pre>
               </div>
             )}
-            {result.stderr && (
+            {result?.stderr && (
               <div className="err" style={{ marginTop: 18 }}>
                 <div className="label">{result.compileError ? 'compile error' : 'error'}</div>
                 <pre>{result.stderr}</pre>
               </div>
             )}
-            {verdict && !verdict.ok && verdict.msg && !result.stderr && (
+            {verdict && !verdict.ok && verdict.msg && !result?.stderr && (
               <div className="hintbox" style={{ marginTop: 18 }}><pre>{verdict.msg}</pre></div>
             )}
           </motion.div>

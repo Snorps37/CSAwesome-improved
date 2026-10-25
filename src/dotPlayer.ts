@@ -1,7 +1,8 @@
 import type { DotEvent } from './runner';
 
-type DotState = { x: number; y: number; heading: number; color: string; size: number; pen: boolean; visible: boolean };
+type DotState = { x: number; y: number; heading: number; color: string; size: number; pen: boolean; visible: boolean; filled: boolean };
 type Seg = { x0: number; y0: number; x1: number; y1: number; color: string; size: number; t: number };
+type Shape = { op: string; x: number; y: number; heading: number; color: string; size: number; filled: boolean; r?: number; w?: number; h?: number; text?: string };
 type Anim = { id: number; x0: number; y0: number; x1: number; y1: number; start: number; dur: number; draw: boolean };
 
 const COLORS: Record<string, string> = {
@@ -22,6 +23,7 @@ export class DotPlayer {
   private ctx: CanvasRenderingContext2D;
   private dots = new Map<number, DotState>();
   private segs: Seg[] = [];
+  private shapes: Shape[] = [];
   private queue: DotEvent[] = [];
   private anim: Anim | null = null;
   private wait = 0; // timestamp until which we pause
@@ -42,6 +44,7 @@ export class DotPlayer {
   play(events: DotEvent[]) {
     this.dots.clear();
     this.segs = [];
+    this.shapes = [];
     this.anim = null;
     this.wait = 0;
     this.queue = events.slice(0, 20000);
@@ -60,7 +63,7 @@ export class DotPlayer {
 
   private state(id: number): DotState {
     let s = this.dots.get(id);
-    if (!s) { s = { x: 0, y: 0, heading: 0, color: '#67e8f9', size: 3, pen: true, visible: true }; this.dots.set(id, s); }
+    if (!s) { s = { x: 0, y: 0, heading: 0, color: '#67e8f9', size: 3, pen: true, visible: true, filled: false }; this.dots.set(id, s); }
     return s;
   }
 
@@ -87,18 +90,27 @@ export class DotPlayer {
         s.x = Number(ev.x); s.y = Number(ev.y);
         this.wait = now + pause;
         break;
-      case 'move': {
+      case 'move':
+      case 'line': {
         const x1 = Number(ev.x), y1 = Number(ev.y);
         const dist = Math.hypot(x1 - s.x, y1 - s.y);
         const dur = instant ? 0 : (dist / (UNITS_PER_SEC * this.speed)) * 1000;
-        this.anim = { id: ev.id, x0: s.x, y0: s.y, x1, y1, start: now, dur, draw: s.pen };
+        this.anim = { id: ev.id, x0: s.x, y0: s.y, x1, y1, start: now, dur, draw: s.pen || ev.op === 'line' };
         break;
       }
       case 'heading': s.heading = Number(ev.deg); this.wait = now + pause; break;
       case 'color': s.color = resolveColor(String(ev.color)); break;
       case 'size': s.size = Math.max(0.5, Number(ev.size)); break;
       case 'pen': s.pen = !!ev.down; break;
-      case 'clear': this.segs = []; break;
+      case 'fill': s.filled = !!ev.filled; break;
+      case 'circle':
+      case 'rect':
+      case 'text':
+        this.shapes.push({ op: ev.op, x: s.x, y: s.y, heading: s.heading, color: s.color, size: s.size, filled: s.filled, r: Number(ev.r), w: Number(ev.w), h: Number(ev.h), text: String(ev.text ?? '') });
+        if (this.shapes.length > 8000) this.shapes.splice(0, 1000);
+        this.wait = now + pause;
+        break;
+      case 'clear': this.segs = []; this.shapes = []; break;
     }
   }
 
@@ -142,6 +154,24 @@ export class DotPlayer {
     ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, Math.round(h / 2) + 0.5); ctx.lineTo(w, Math.round(h / 2) + 0.5);
     ctx.moveTo(Math.round(w / 2) + 0.5, 0); ctx.lineTo(Math.round(w / 2) + 0.5, h); ctx.stroke();
+
+    for (const shape of this.shapes) {
+      ctx.save();
+      ctx.translate(X(shape.x), Y(shape.y));
+      ctx.strokeStyle = shape.color; ctx.fillStyle = shape.color;
+      ctx.lineWidth = Math.max(1, shape.size * k * 0.6);
+      if (shape.op === 'text') {
+        ctx.font = `${Math.max(10, 12 * k)}px 'JetBrains Mono Variable', monospace`;
+        ctx.fillText(shape.text ?? '', 0, 0);
+      } else {
+        ctx.rotate(shape.heading * Math.PI / 180);
+        ctx.beginPath();
+        if (shape.op === 'circle') ctx.arc(0, 0, Math.max(0, shape.r ?? 0) * k, 0, Math.PI * 2);
+        else ctx.rect(-(shape.w ?? 0) * k / 2, -(shape.h ?? 0) * k / 2, (shape.w ?? 0) * k, (shape.h ?? 0) * k);
+        if (shape.filled) ctx.fill(); else ctx.stroke();
+      }
+      ctx.restore();
+    }
 
     ctx.lineCap = 'round';
     for (const sg of this.segs) {

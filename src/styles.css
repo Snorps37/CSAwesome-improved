@@ -210,3 +210,16 @@ button:focus-visible, a:focus-visible { outline: 1px solid var(--accent); outlin
   .units .unit-row:last-child { border-bottom: 0; }
   .units > :nth-last-child(-n+2) .unit-row, .units > .lesson-row:nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
 }
+
+
+.sandbox { max-width: 980px; margin: 7vh auto 0; }
+.sandbox h1 { font-size: clamp(30px, 4vw, 46px); letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 16px; font-weight: 600; }
+.sandbox-intro { color: var(--dim); margin: 0 0 28px; }
+.sandbox .code-block { margin-top: 28px; }
+.dot-reference { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 0; font-size: 14px; }
+.dot-reference summary { cursor: pointer; color: var(--dim); }
+.dot-reference .md { overflow-x: auto; }
+.dot-reference td:first-child { min-width: 260px; }
+.dot-canvas-shell { position: relative; padding-bottom: 6px; }
+.dot-canvas-shell:hover .resize-handle::after, .resize-handle:focus-visible::after { opacity: 1; }
+@media (max-width: 640px) { .nav { gap: 14px; flex-wrap: wrap; justify-content: flex-end; } .header { gap: 18px; } }

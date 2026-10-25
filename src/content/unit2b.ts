@@ -7,7 +7,7 @@ const j = String.raw;
 export const unit2b: Lesson[] = [
   {
     id: '2-7',
-    title: 'while Loops',
+    title: 'While Loops',
     blocks: [
       { type: 'text', md: md`
 A **loop** repeats a block of code. The **while loop** repeats as long as its condition is true:
@@ -30,13 +30,13 @@ If the update is missing, you get an **infinite loop**: the program never stops 
 
 Use a while loop when you do not know in advance how many repetitions you need, for example "keep halving until the number is small".
 ` },
-      { type: 'quiz', id: 'q-wh1', question: 'How many times does the body run?\n\n§§§java\nint i = 5;\nwhile (i < 5) {\n    i++;\n}\n§§§',
+      { type: 'quiz', id: 'u2-7-q-wh1', question: 'How many times does the body run?\n\n§§§java\nint i = 5;\nwhile (i < 5) {\n    i++;\n}\n§§§',
         choices: ['0', '1', '5', 'Forever'], answer: 0, explanation: 'The condition 5 < 5 is false immediately, so the body is skipped entirely.' },
-      { type: 'quiz', id: 'q-wh2', question: 'What is wrong with this loop?\n\n§§§java\nint n = 10;\nwhile (n > 0) {\n    System.out.println(n);\n}\n§§§',
+      { type: 'quiz', id: 'u2-7-q-wh2', question: 'What is wrong with this loop?\n\n§§§java\nint n = 10;\nwhile (n > 0) {\n    System.out.println(n);\n}\n§§§',
         choices: ['The condition is never true', 'n is never changed, so it is an infinite loop', 'It prints in the wrong order', 'Nothing, it is correct'], answer: 1, explanation: 'Nothing in the body changes n, so n > 0 stays true forever.' },
-      { type: 'quiz', id: 'q-wh3', question: 'What is the final value of §x§?\n\n§§§java\nint x = 1;\nwhile (x < 50) {\n    x *= 3;\n}\n§§§',
+      { type: 'quiz', id: 'u2-7-q-wh3', question: 'What is the final value of §x§?\n\n§§§java\nint x = 1;\nwhile (x < 50) {\n    x *= 3;\n}\n§§§',
         choices: ['27', '81', '50', '243'], answer: 1, explanation: 'x goes 1, 3, 9, 27, then 81. 81 is not less than 50 so the loop stops with x = 81.' },
-      { type: 'predict', id: 'p-wh', question: 'What does this program print? Trace n and total each time through the loop.',
+      { type: 'predict', id: 'u2-7-p-wh', question: 'What does this program print? Trace n and total each time through the loop.',
         code: j`public class Main {
     public static void main(String[] args) {
         int n = 1;
@@ -49,7 +49,7 @@ Use a while loop when you do not know in advance how many repetitions you need, 
     }
 }
 `, answer: '11 25', explanation: 'total grows 1, 4, 9, 16, 25 as n takes 1, 3, 5, 7, 9. After the last pass n has been increased to 11 and total (25) is no longer below 20.' },
-      { type: 'code', id: 'wh-sum', prompt: 'Use a §while§ loop to add the whole numbers 1 through 10. Print §Sum: 55§.',
+      { type: 'code', id: 'u2-7-wh-sum', prompt: 'Use a §while§ loop to add the whole numbers 1 through 10. Print §Sum: 55§.',
         expected: 'Sum: 55',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -72,7 +72,7 @@ Use a while loop when you do not know in advance how many repetitions you need, 
     }
 }
 `, hint: 'Loop while i <= 10; add i, then increment i.' },
-      { type: 'code', id: 'wh-digits', prompt: 'Count how many digits §n = 90210§ has by dividing by 10 until it reaches 0. Print §Digits: 5§.',
+      { type: 'code', id: 'u2-7-wh-digits', prompt: 'Count how many digits §n = 90210§ has by dividing by 10 until it reaches 0. Print §Digits: 5§.',
         expected: 'Digits: 5',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -95,7 +95,7 @@ Use a while loop when you do not know in advance how many repetitions you need, 
     }
 }
 ` },
-      { type: 'code', id: 'wh-fix', prompt: 'This loop should print the powers of two that are below 100: §1 2 4 8 16 32 64§. It has an off-by-one error and also forgets part of the update (so it would run forever). Fix it.',
+      { type: 'code', id: 'u2-7-wh-fix', prompt: 'This loop should print the powers of two that are below 100: §1 2 4 8 16 32 64§. It has an off-by-one error and also forgets part of the update (so it would run forever). Fix it.',
         expected: '1 2 4 8 16 32 64',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -118,9 +118,22 @@ Use a while loop when you do not know in advance how many repetitions you need, 
     }
 }
 `, hint: 'Double p each time; and 128 is above 100, so how should the condition compare?' },
-      { type: 'code', id: 'wh-dot', dot: true, minDotMoves: 10,
+      { type: 'code', id: 'u2-7-wh-dot', dot: true, minDotMoves: 10,
         prompt: 'A while loop with an unknown number of steps: the dot spirals outward until the side length passes 90. Change the growth or turn angle to get a different spiral.',
         starter: j`public class Main {
+    public static void main(String[] args) {
+        Dot d = new Dot();
+        d.setColor("cyan");
+        double len = 4;
+        while (len < 90) {
+            d.forward(len);
+            d.turnRight(60);
+            len += 3;
+        }
+    }
+}
+`,
+        solution: j`public class Main {
     public static void main(String[] args) {
         Dot d = new Dot();
         d.setColor("cyan");
@@ -137,7 +150,7 @@ Use a while loop when you do not know in advance how many repetitions you need, 
   },
   {
     id: '2-8',
-    title: 'for Loops',
+    title: 'For Loops',
     blocks: [
       { type: 'text', md: md`
 When you know how many times to repeat, the **for loop** packs the three loop parts into one line:
@@ -173,14 +186,14 @@ Common patterns:
 
 A variable declared in the header exists only inside the loop. After the loop, §i§ is out of scope.
 ` },
-      { type: 'quiz', id: 'q-for1', question: 'How many times does §for (int i = 3; i <= 9; i += 2)§ run its body?',
+      { type: 'quiz', id: 'u2-8-q-for1', question: 'How many times does §for (int i = 3; i <= 9; i += 2)§ run its body?',
         choices: ['3', '4', '5', '7'], answer: 1, explanation: 'i takes the values 3, 5, 7, 9: four times.' },
-      { type: 'quiz', id: 'q-for2', question: 'What is the value of §sum§ after this loop?\n\n§§§java\nint sum = 0;\nfor (int i = 10; i > 0; i -= 3) sum += i;\n§§§',
+      { type: 'quiz', id: 'u2-8-q-for2', question: 'What is the value of §sum§ after this loop?\n\n§§§java\nint sum = 0;\nfor (int i = 10; i > 0; i -= 3) sum += i;\n§§§',
         choices: ['22', '28', '55', '10'], answer: 0, explanation: 'i is 10, 7, 4, 1, so sum = 10 + 7 + 4 + 1 = 22.' },
-      { type: 'quiz', id: 'q-for3', question: 'Which loop prints the numbers 1 to 10?',
+      { type: 'quiz', id: 'u2-8-q-for3', question: 'Which loop prints the numbers 1 to 10?',
         choices: ['for (int i = 1; i < 10; i++)', 'for (int i = 0; i <= 10; i++)', 'for (int i = 1; i <= 10; i++)', 'for (int i = 10; i > 1; i--)'], answer: 2,
         explanation: 'Start at 1 and keep going while i <= 10. The first stops at 9, the second starts at 0, the last counts down.' },
-      { type: 'predict', id: 'p-for', question: 'What does this program print?',
+      { type: 'predict', id: 'u2-8-p-for', question: 'What does this program print?',
         code: j`public class Main {
     public static void main(String[] args) {
         for (int i = 2; i <= 20; i += 6) {
@@ -194,7 +207,7 @@ A variable declared in the header exists only inside the loop. After the loop, �
     }
 }
 `, answer: '2,8,14,20,\n3 2 1 go', explanation: 'i takes 2, 8, 14, 20 and each is followed by a comma. The second loop counts down from 3.' },
-      { type: 'code', id: 'for-count', prompt: 'Use a §for§ loop to print the even numbers from 2 to 10 on one line, separated by spaces: §2 4 6 8 10§.',
+      { type: 'code', id: 'u2-8-for-count', prompt: 'Use a §for§ loop to print the even numbers from 2 to 10 on one line, separated by spaces: §2 4 6 8 10§.',
         expected: '2 4 6 8 10',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -212,7 +225,7 @@ A variable declared in the header exists only inside the loop. After the loop, �
     }
 }
 ` },
-      { type: 'code', id: 'for-fix', prompt: 'A countdown should print §5 4 3 2 1 Liftoff!§ but this code has two mistakes in the loop header. Fix them.',
+      { type: 'code', id: 'u2-8-for-fix', prompt: 'A countdown should print §5 4 3 2 1 Liftoff!§ but this code has two mistakes in the loop header. Fix them.',
         expected: '5 4 3 2 1 Liftoff!',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -232,7 +245,7 @@ A variable declared in the header exists only inside the loop. After the loop, �
     }
 }
 `, hint: 'To count down you need i-- and a condition that is true while i is still at least 1.' },
-      { type: 'code', id: 'for-table', prompt: 'Print the first five multiples of 7 as §7 14 21 28 35§ (one line, space separated) with a for loop whose body is a single print.',
+      { type: 'code', id: 'u2-8-for-table', prompt: 'Print the first five multiples of 7 as §7 14 21 28 35§ (one line, space separated) with a for loop whose body is a single print.',
         expected: '7 14 21 28 35',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -250,9 +263,21 @@ A variable declared in the header exists only inside the loop. After the loop, �
     }
 }
 `, hint: 'Count i from 1 to 5 and print 7 * i.' },
-      { type: 'code', id: 'for-dot', dot: true, minDotMoves: 5,
+      { type: 'code', id: 'u2-8-for-dot', dot: true, minDotMoves: 5,
         prompt: 'The number of sides drives the whole shape. Set §n§ to 3, 5, 8 or 12 and watch each regular polygon appear (exterior angle is 360 / n).',
         starter: j`public class Main {
+    public static void main(String[] args) {
+        int n = 7;
+        Dot d = new Dot(-20, -45);
+        d.setColor("violet");
+        for (int i = 0; i < n; i++) {
+            d.forward(40);
+            d.turnRight(360.0 / n);
+        }
+    }
+}
+`,
+        solution: j`public class Main {
     public static void main(String[] args) {
         int n = 7;
         Dot d = new Dot(-20, -45);
@@ -294,13 +319,13 @@ for (int d = 2; d < n; d++) {
 }
 §§§
 ` },
-      { type: 'quiz', id: 'q-alg1', question: 'To find the **smallest** of several positive numbers by scanning them, what should §min§ be initialized to?',
+      { type: 'quiz', id: 'u2-9-q-alg1', question: 'To find the **smallest** of several positive numbers by scanning them, what should §min§ be initialized to?',
         choices: ['0', '-1', 'Integer.MAX_VALUE', 'Integer.MIN_VALUE'], answer: 2, explanation: 'The starting value must be larger than any item so that the first real item replaces it. Starting at 0 would stay 0 forever.' },
-      { type: 'quiz', id: 'q-alg2', question: 'What does this code compute?\n\n§§§java\nint c = 0;\nfor (int i = 1; i <= 100; i++)\n    if (i % 5 == 0 && i % 2 == 0) c++;\n§§§',
+      { type: 'quiz', id: 'u2-9-q-alg2', question: 'What does this code compute?\n\n§§§java\nint c = 0;\nfor (int i = 1; i <= 100; i++)\n    if (i % 5 == 0 && i % 2 == 0) c++;\n§§§',
         choices: ['How many numbers up to 100 are divisible by 10', 'The sum of multiples of 10', 'How many numbers up to 100 are divisible by 5 or 2', 'How many numbers up to 100 are odd'], answer: 0, explanation: 'Divisible by both 5 and 2 means divisible by 10. The count is 10.' },
-      { type: 'quiz', id: 'q-alg3', question: 'Which line correctly computes the average of §sum§ and §count§ (both ints) as a decimal?',
+      { type: 'quiz', id: 'u2-9-q-alg3', question: 'Which line correctly computes the average of §sum§ and §count§ (both ints) as a decimal?',
         choices: ['double avg = sum / count;', 'double avg = (double) (sum / count);', 'double avg = (double) sum / count;', 'int avg = sum / count;'], answer: 2, explanation: 'The cast must happen before the division. The first two do integer division first.' },
-      { type: 'predict', id: 'p-alg', question: 'What does this program print?',
+      { type: 'predict', id: 'u2-9-p-alg', question: 'What does this program print?',
         code: j`public class Main {
     public static void main(String[] args) {
         int n = 3052;
@@ -318,7 +343,7 @@ for (int d = 2; d < n; d++) {
     }
 }
 `, answer: '10 2', explanation: 'The digits are 2, 5, 0, 3 (last to first). Their sum is 10, and the digits above 2 are 5 and 3, so count is 2.' },
-      { type: 'code', id: 'alg-prime', prompt: 'Complete the flag-variable algorithm. The loop checks every number from 2 to n-1 as a possible divisor. For 21 it must print §21 is prime: false§ (then try 29 and 2 to be sure).',
+      { type: 'code', id: 'u2-9-alg-prime', prompt: 'Complete the flag-variable algorithm. The loop checks every number from 2 to n-1 as a possible divisor. For 21 it must print §21 is prime: false§ (then try 29 and 2 to be sure).',
         expected: '21 is prime: false',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -344,7 +369,7 @@ for (int d = 2; d < n; d++) {
     }
 }
 `, hint: 'if (n % d == 0) then set prime to false.' },
-      { type: 'code', id: 'alg-minmax', prompt: 'The loop generates the values (i * 7) % 11 + 5 for i from 0 to 9. Find the smallest and largest. This code has a bug in how the minimum starts, so it reports §min=0§. Fix it so it prints §min=5 max=15§.',
+      { type: 'code', id: 'u2-9-alg-minmax', prompt: 'The loop generates the values (i * 7) % 11 + 5 for i from 0 to 9. Find the smallest and largest. This code has a bug in how the minimum starts, so it reports §min=0§. Fix it so it prints §min=5 max=15§.',
         expected: 'min=5 max=15',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -372,7 +397,7 @@ for (int d = 2; d < n; d++) {
     }
 }
 `, hint: 'No value is below 0, so min never changes. Start it at the largest possible int.' },
-      { type: 'code', id: 'alg-avg', prompt: 'Compute the average of the whole numbers from 1 to 10 as a decimal and print §Average: 5.5§.',
+      { type: 'code', id: 'u2-9-alg-avg', prompt: 'Compute the average of the whole numbers from 1 to 10 as a decimal and print §Average: 5.5§.',
         expected: 'Average: 5.5',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -396,7 +421,7 @@ for (int d = 2; d < n; d++) {
     }
 }
 ` },
-      { type: 'code', id: 'alg-random', prompt: 'Simulate rolling two dice 5000 times and count how often the total is 7 (about one in six). The exact count changes every run, so this program reports whether the count is plausible. Fill in the die rolls (1 to 6). Expected: §plausible: true§.',
+      { type: 'code', id: 'u2-9-alg-random', prompt: 'Simulate rolling two dice 5000 times and count how often the total is 7 (about one in six). The exact count changes every run, so this program reports whether the count is plausible. Fill in the die rolls (1 to 6). Expected: §plausible: true§.',
         expected: 'plausible: true',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -455,13 +480,13 @@ Typical algorithms:
 
 Remember that Strings are immutable. Building a result creates a new String each time; the original is unchanged.
 ` },
-      { type: 'quiz', id: 'q-s1', question: 'What happens when this loop runs on §String s = "abc";§?\n\n§§§java\nfor (int i = 0; i <= s.length(); i++)\n    System.out.print(s.charAt(i));\n§§§',
+      { type: 'quiz', id: 'u2-10-q-s1', question: 'What happens when this loop runs on §String s = "abc";§?\n\n§§§java\nfor (int i = 0; i <= s.length(); i++)\n    System.out.print(s.charAt(i));\n§§§',
         choices: ['Prints abc', 'Prints abc and then crashes with StringIndexOutOfBoundsException', 'Does not compile', 'Prints abc followed by a space'], answer: 1, explanation: 'The last pass has i = 3, but the valid indexes are 0 to 2.' },
-      { type: 'quiz', id: 'q-s2', question: 'What does this code produce?\n\n§§§java\nString r = "";\nString w = "tab";\nfor (int i = 0; i < w.length(); i++)\n    r = w.charAt(i) + r;\n§§§',
+      { type: 'quiz', id: 'u2-10-q-s2', question: 'What does this code produce?\n\n§§§java\nString r = "";\nString w = "tab";\nfor (int i = 0; i < w.length(); i++)\n    r = w.charAt(i) + r;\n§§§',
         choices: ['"tab"', '"bat"', '"bta"', '"ttt"'], answer: 1, explanation: 'Each new character is placed in front: t, then at, then bat.' },
-      { type: 'quiz', id: 'q-s3', question: 'Which is the correct way to test whether the character at index §i§ of §s§ is a lowercase "e"?',
+      { type: 'quiz', id: 'u2-10-q-s3', question: 'Which is the correct way to test whether the character at index §i§ of §s§ is a lowercase "e"?',
         choices: ['s.charAt(i) == "e"', 's.charAt(i) == \'e\'', 's.substring(i) == "e"', 's[i] == \'e\''], answer: 1, explanation: 'charAt returns a char, which is compared to a char literal in single quotes. Strings use double quotes, and Java has no s[i] syntax.' },
-      { type: 'predict', id: 'p-str', question: 'What does this program print?',
+      { type: 'predict', id: 'u2-10-p-str', question: 'What does this program print?',
         code: j`public class Main {
     public static void main(String[] args) {
         String s = "banana";
@@ -479,7 +504,7 @@ Remember that Strings are immutable. Building a result creates a new String each
     }
 }
 `, answer: 'bnn 3', explanation: 'The a characters are counted (3). Every other letter is appended to out in order: b, n, n.' },
-      { type: 'code', id: 'str-count', prompt: 'Count the vowels (a, e, i, o, u) in the sentence. Print §Vowels: 9§.',
+      { type: 'code', id: 'u2-10-str-count', prompt: 'Count the vowels (a, e, i, o, u) in the sentence. Print §Vowels: 9§.',
         expected: 'Vowels: 9',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -504,7 +529,7 @@ Remember that Strings are immutable. Building a result creates a new String each
     }
 }
 `, hint: 'Combine five comparisons with ||.' },
-      { type: 'code', id: 'str-reverse', prompt: 'Build the reverse of §word§ in a new String and print it: for "stressed" print §desserts§.',
+      { type: 'code', id: 'u2-10-str-reverse', prompt: 'Build the reverse of §word§ in a new String and print it: for "stressed" print §desserts§.',
         expected: 'desserts',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -526,7 +551,7 @@ Remember that Strings are immutable. Building a result creates a new String each
     }
 }
 ` },
-      { type: 'code', id: 'str-fix', prompt: 'This program should print §Found at 2§ for the first position of a "z" in the text, but it crashes with a StringIndexOutOfBoundsException. Fix the loop (and make sure it stops looking after it finds the first one).',
+      { type: 'code', id: 'u2-10-str-fix', prompt: 'This program should print §Found at 2§ for the first position of a "z" in the text, but it crashes with a StringIndexOutOfBoundsException. Fix the loop (and make sure it stops looking after it finds the first one).',
         expected: 'Found at 2',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -554,7 +579,7 @@ Remember that Strings are immutable. Building a result creates a new String each
     }
 }
 `, hint: 'The valid indexes of a String are 0 to length() - 1, so the condition should use < not <=.' },
-      { type: 'code', id: 'str-pal', prompt: 'Write a palindrome check: build the reverse of §word§ and compare it with §equals§. For "racecar" print §racecar: true§.',
+      { type: 'code', id: 'u2-10-str-pal', prompt: 'Write a palindrome check: build the reverse of §word§ and compare it with §equals§. For "racecar" print §racecar: true§.',
         expected: 'racecar: true',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -613,13 +638,13 @@ Use different variable names for the two loops (§i§ and §j§, or §row§ and 
 
 Nested loops also create tables, grids and repeated drawings. With Dot, an outer loop can turn between copies of a shape drawn by the inner loop.
 ` },
-      { type: 'quiz', id: 'q-n1', question: 'How many times does §System.out.print("x")§ run?\n\n§§§java\nfor (int i = 0; i < 5; i++)\n    for (int j = 0; j < 3; j++)\n        System.out.print("x");\n§§§',
+      { type: 'quiz', id: 'u2-11-q-n1', question: 'How many times does §System.out.print("x")§ run?\n\n§§§java\nfor (int i = 0; i < 5; i++)\n    for (int j = 0; j < 3; j++)\n        System.out.print("x");\n§§§',
         choices: ['3', '5', '8', '15'], answer: 3, explanation: '5 outer passes x 3 inner passes = 15.' },
-      { type: 'quiz', id: 'q-n2', question: 'How many times does the inner body run?\n\n§§§java\nfor (int i = 1; i <= 4; i++)\n    for (int j = 1; j <= i; j++)\n        count++;\n§§§',
+      { type: 'quiz', id: 'u2-11-q-n2', question: 'How many times does the inner body run?\n\n§§§java\nfor (int i = 1; i <= 4; i++)\n    for (int j = 1; j <= i; j++)\n        count++;\n§§§',
         choices: ['4', '10', '16', '8'], answer: 1, explanation: 'The inner loop runs 1, 2, 3 and 4 times: 1 + 2 + 3 + 4 = 10.' },
-      { type: 'quiz', id: 'q-n3', question: 'What is wrong with this code?\n\n§§§java\nfor (int i = 0; i < 3; i++)\n    for (int i = 0; i < 3; i++)\n        System.out.print(i);\n§§§',
+      { type: 'quiz', id: 'u2-11-q-n3', question: 'What is wrong with this code?\n\n§§§java\nfor (int i = 0; i < 3; i++)\n    for (int i = 0; i < 3; i++)\n        System.out.print(i);\n§§§',
         choices: ['Nothing', 'It never ends', 'The variable i is declared twice, a compile-time error', 'It prints in reverse'], answer: 2, explanation: 'The inner i would redeclare a variable that is already in scope. Use a different name.' },
-      { type: 'predict', id: 'p-nest2', question: 'What does this program print?',
+      { type: 'predict', id: 'u2-11-p-nest2', question: 'What does this program print?',
         code: j`public class Main {
     public static void main(String[] args) {
         for (int i = 1; i <= 3; i++) {
@@ -631,7 +656,7 @@ Nested loops also create tables, grids and repeated drawings. With Dot, an outer
     }
 }
 `, answer: '1 2 3\n4 6\n9', explanation: 'Row 1: j = 1,2,3 gives 1 2 3. Row 2: j = 2,3 gives 4 6. Row 3: j = 3 gives 9.' },
-      { type: 'code', id: 'nest-tri', prompt: 'Print a right triangle of stars with 5 rows (1 star on the first row, 5 on the last). Expected:\n\n§*§\n§**§\n§***§\n§****§\n§*****§',
+      { type: 'code', id: 'u2-11-nest-tri', prompt: 'Print a right triangle of stars with 5 rows (1 star on the first row, 5 on the last). Expected:\n\n§*§\n§**§\n§***§\n§****§\n§*****§',
         expected: '*\n**\n***\n****\n*****',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -650,7 +675,7 @@ Nested loops also create tables, grids and repeated drawings. With Dot, an outer
     }
 }
 `, hint: 'The inner loop should run as many times as the current row number.' },
-      { type: 'code', id: 'nest-table', prompt: 'Print a 4 by 4 multiplication table with numbers separated by spaces, one row per line, starting with §1 2 3 4§ and ending with §4 8 12 16§.',
+      { type: 'code', id: 'u2-11-nest-table', prompt: 'Print a 4 by 4 multiplication table with numbers separated by spaces, one row per line, starting with §1 2 3 4§ and ending with §4 8 12 16§.',
         expected: '1 2 3 4\n2 4 6 8\n3 6 9 12\n4 8 12 16',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -669,7 +694,7 @@ Nested loops also create tables, grids and repeated drawings. With Dot, an outer
     }
 }
 ` },
-      { type: 'code', id: 'nest-fix', prompt: 'This should print a 3 row by 5 column grid of §#§ characters, but the inner loop reuses the outer variable and fails to compile. Also the rows are not ended with a new line. Fix both.',
+      { type: 'code', id: 'u2-11-nest-fix', prompt: 'This should print a 3 row by 5 column grid of §#§ characters, but the inner loop reuses the outer variable and fails to compile. Also the rows are not ended with a new line. Fix both.',
         expected: '#####\n#####\n#####',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -692,9 +717,23 @@ Nested loops also create tables, grids and repeated drawings. With Dot, an outer
     }
 }
 ` },
-      { type: 'code', id: 'nest-dot', dot: true, minDotMoves: 40,
+      { type: 'code', id: 'u2-11-nest-dot', dot: true, minDotMoves: 40,
         prompt: 'A rosette: the inner loop draws a square, the outer loop rotates and repeats it. Change the numbers of squares or sides to design your own pattern (36 total sides = 9 squares).',
         starter: j`public class Main {
+    public static void main(String[] args) {
+        Dot d = new Dot(0, -10);
+        d.setColor("violet");
+        for (int petal = 0; petal < 12; petal++) {
+            for (int side = 0; side < 4; side++) {
+                d.forward(45);
+                d.turnRight(90);
+            }
+            d.turnRight(30);
+        }
+    }
+}
+`,
+        solution: j`public class Main {
     public static void main(String[] args) {
         Dot d = new Dot(0, -10);
         d.setColor("violet");
@@ -712,7 +751,7 @@ Nested loops also create tables, grids and repeated drawings. With Dot, an outer
   },
   {
     id: '2-12',
-    title: 'Informal Run-Time Analysis',
+    title: 'Informal Runtime Analysis of Loops',
     blocks: [
       { type: 'text', md: md`
 Often you need to know what a loop does without running it, or how much work it does. Two skills help: **tracing** and **counting iterations**.
@@ -738,13 +777,13 @@ A **statement execution count** is how many times a line of code runs. It tells 
 
 Watch for loops that never run (the condition starts false) and loops that never stop (the update moves the wrong way).
 ` },
-      { type: 'quiz', id: 'q-an1', question: 'How many times does the body run?\n\n§§§java\nfor (int i = 5; i <= 20; i += 5)\n§§§',
+      { type: 'quiz', id: 'u2-12-q-an1', question: 'How many times does the body run?\n\n§§§java\nfor (int i = 5; i <= 20; i += 5)\n§§§',
         choices: ['3', '4', '5', '16'], answer: 1, explanation: 'i is 5, 10, 15, 20: four times.' },
-      { type: 'quiz', id: 'q-an2', question: 'About how many times does this loop run for n = 1000?\n\n§§§java\nfor (int i = 1; i < n; i *= 2)\n§§§',
+      { type: 'quiz', id: 'u2-12-q-an2', question: 'About how many times does this loop run for n = 1000?\n\n§§§java\nfor (int i = 1; i < n; i *= 2)\n§§§',
         choices: ['10', '500', '1000', '2000'], answer: 0, explanation: 'i doubles each time: 1, 2, 4, ..., 512. That is 10 passes, because 2^10 is about 1000.' },
-      { type: 'quiz', id: 'q-an3', question: 'A loop over n items does 3 steps per item. A nested loop does n x n steps. If n grows from 10 to 100, how does the work change?',
+      { type: 'quiz', id: 'u2-12-q-an3', question: 'A loop over n items does 3 steps per item. A nested loop does n x n steps. If n grows from 10 to 100, how does the work change?',
         choices: ['Both grow 10 times', 'Single loop 10 times, nested loop 100 times', 'Single loop 100 times, nested loop 10 times', 'Neither changes'], answer: 1, explanation: 'Single loop work is proportional to n (10x). Nested loop work is proportional to n squared (100x).' },
-      { type: 'predict', id: 'p-trace', question: 'Trace the loop. What does this program print?',
+      { type: 'predict', id: 'u2-12-p-trace', question: 'Trace the loop. What does this program print?',
         code: j`public class Main {
     public static void main(String[] args) {
         int x = 100;
@@ -761,7 +800,7 @@ Watch for loops that never run (the condition starts false) and loops that never
     }
 }
 `, answer: '1 8', explanation: 'x: 100, 50, 25, 24, 12, 6, 3, 2, 1. That is 8 changes, ending at 1.' },
-      { type: 'predict', id: 'p-count', question: 'How many times does the counter increment? Print result:',
+      { type: 'predict', id: 'u2-12-p-count', question: 'How many times does the counter increment? Print result:',
         code: j`public class Main {
     public static void main(String[] args) {
         int count = 0;
@@ -774,7 +813,7 @@ Watch for loops that never run (the condition starts false) and loops that never
     }
 }
 `, answer: '12', explanation: 'Inner passes for i = 0..5 are 3, 3, 2, 2, 1, 1 (j = i, i+2, ... below 6): total 12.' },
-      { type: 'code', id: 'an-count', prompt: 'Change **one number** in the loop header so the body runs exactly **7** times. The program prints how many times it ran. Expected: §Ran 7 times§.',
+      { type: 'code', id: 'u2-12-an-count', prompt: 'Change **one number** in the loop header so the body runs exactly **7** times. The program prints how many times it ran. Expected: §Ran 7 times§.',
         expected: 'Ran 7 times',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -796,7 +835,7 @@ Watch for loops that never run (the condition starts false) and loops that never
     }
 }
 `, hint: 'i takes 0, 2, 4, ... Which limit allows exactly seven values?' },
-      { type: 'code', id: 'an-fix', prompt: 'This loop was meant to sum the numbers 10 down to 1 (55), but the counter moves the wrong way, so only a safety guard ends it and the sum is wrong. Fix the **update** (and remove the guards) so it prints §Sum: 55§.',
+      { type: 'code', id: 'u2-12-an-fix', prompt: 'This loop was meant to sum the numbers 10 down to 1 (55), but the counter moves the wrong way, so only a safety guard ends it and the sum is wrong. Fix the **update** (and remove the guards) so it prints §Sum: 55§.',
         expected: 'Sum: 55',
         starter: j`public class Main {
     public static void main(String[] args) {
@@ -825,7 +864,7 @@ Watch for loops that never run (the condition starts false) and loops that never
     }
 }
 `, hint: 'The counter must move toward the end of the loop: count down with n--. Then the extra guard conditions are not needed.' },
-      { type: 'code', id: 'an-nested', prompt: 'Count the statement executions of a nested loop yourself in code: add a counter to the inner body and print it. For the loops below (outer 0 to 3, inner 0 to 4) print §Inner body ran 20 times§.',
+      { type: 'code', id: 'u2-12-an-nested', prompt: 'Count the statement executions of a nested loop yourself in code: add a counter to the inner body and print it. For the loops below (outer 0 to 3, inner 0 to 4) print §Inner body ran 20 times§.',
         expected: 'Inner body ran 20 times',
         starter: j`public class Main {
     public static void main(String[] args) {

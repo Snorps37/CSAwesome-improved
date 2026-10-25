@@ -7,7 +7,7 @@ const j = String.raw;
 export const unit5a: Lesson[] = [
   {
     id: '5-1',
-    title: 'Creating Superclasses and Subclasses',
+    title: 'Inheritance, Superclass, Subclass',
     blocks: [
       { type: 'text', md: md`
 Suppose you are writing a program about pets. Dogs and cats both have a name and both can eat, but only dogs fetch and only cats purr. Copying the shared code into two classes is wasteful, and fixing a bug would mean fixing it twice. **Inheritance** solves this: put the shared parts in one class and let other classes build on it.
@@ -160,7 +160,7 @@ class Square extends Rectangle {
   },
   {
     id: '5-2',
-    title: 'Writing Constructors for Subclasses',
+    title: 'Inheritance and Constructors',
     blocks: [
       { type: 'text', md: md`
 Constructors are **not inherited**, but a subclass object still contains everything its superclass defines. So when you build a §Dog§, Java must first build the §Pet§ part. The subclass constructor does this by calling the superclass constructor with the keyword §super§.

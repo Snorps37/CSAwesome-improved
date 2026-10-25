@@ -7,7 +7,7 @@ const j = String.raw;
 export const unit5b: Lesson[] = [
   {
     id: '5-5',
-    title: 'Creating References Using Inheritance Hierarchies',
+    title: 'Inheritance Hierarchies',
     blocks: [
       { type: 'text', md: md`
 Because a dog *is a* pet, Java lets you store a §Dog§ object in a variable of type §Pet§:

@@ -4,10 +4,10 @@ import { w } from './u4util';
 
 const j = String.raw;
 
-// Unit 4 lessons 4.1-4.8 (data sets, arrays, text input, wrappers, ArrayList). Original wording.
+// Core collection concepts; lesson IDs follow the complete Unit 4 sequence.
 export const unit4a: Lesson[] = [
   {
-    id: '4-1',
+    id: '4-2',
     title: 'Data Sets',
     blocks: [
       { type: 'text', md: md`
@@ -35,7 +35,7 @@ Once data is in a collection you can **process** it with algorithms: find the la
 
 **Data and privacy.** Real data sets often describe real people. Programs that collect or combine data can reveal more than intended, so think about what you store, who can see it, and whether it could be misused.
 
-Here is a first look at what a collection makes possible. Do not worry about the syntax yet; lesson 4.2 explains it.
+Here is a first look at what a collection makes possible. Do not worry about the syntax yet; lesson 4.3 explains it.
 
 §§§java
 int[] scores = {88, 92, 75};
@@ -86,7 +86,7 @@ System.out.println("Average: " + (double) total / scores.length);`),
     ],
   },
   {
-    id: '4-2',
+    id: '4-3',
     title: 'Array Creation and Access',
     blocks: [
       { type: 'text', md: md`
@@ -177,7 +177,7 @@ System.out.println("last: " + a[a.length - 1]);`),
     ],
   },
   {
-    id: '4-3',
+    id: '4-4',
     title: 'Array Traversals',
     blocks: [
       { type: 'text', md: md`
@@ -296,8 +296,8 @@ for (int i = fruit.length - 1; i >= 0; i--) {
     ],
   },
   {
-    id: '4-4',
-    title: 'Array Algorithms',
+    id: '4-5',
+    title: 'Implementing Array Algorithms',
     blocks: [
       { type: 'text', md: md`
 Most array problems reuse a handful of patterns. Learn the shape of each one and you can build the rest.
@@ -451,7 +451,7 @@ System.out.println(allPass);`),
     ],
   },
   {
-    id: '4-5',
+    id: '4-6',
     title: 'Using Text Files',
     blocks: [
       { type: 'text', md: md`
@@ -578,8 +578,8 @@ while (sc.hasNextLine()) {
     ],
   },
   {
-    id: '4-6',
-    title: 'Wrapper Classes',
+    id: '4-7',
+    title: 'Wrapper Classes - Integer and Double',
     blocks: [
       { type: 'text', md: md`
 Collections like §ArrayList§ can hold only **objects**, not primitives. Java supplies a **wrapper class** for each primitive so a number can be treated as an object:
@@ -677,8 +677,8 @@ System.out.println("Smallest: " + smallest);`),
     ],
   },
   {
-    id: '4-7',
-    title: 'ArrayList Methods',
+    id: '4-8',
+    title: 'ArrayList and its Methods',
     blocks: [
       { type: 'text', md: md`
 An **ArrayList** is a list object that **resizes itself**. You add and remove items without worrying about a fixed length. It must be imported, and you name the type of the items in angle brackets (a **generic type**). The type must be a class, so use wrappers for numbers.
@@ -777,7 +777,7 @@ System.out.println(a);`),
     ],
   },
   {
-    id: '4-8',
+    id: '4-9',
     title: 'ArrayList Traversals',
     blocks: [
       { type: 'text', md: md`
